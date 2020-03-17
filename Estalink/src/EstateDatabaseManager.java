@@ -1,3 +1,4 @@
+import model.AgentModel;
 import model.ListingType;
 import model.PropertyModel;
 
@@ -36,6 +37,7 @@ public class EstateDatabaseManager {
     }
 
     private void ExecuteSQLStatement(String query){
+        // Sample selection query
         System.out.println("Executing " + query);
         try {
             PreparedStatement statement = connection.prepareStatement(query);
@@ -92,6 +94,30 @@ public class EstateDatabaseManager {
             ps.executeUpdate();
             connection.commit();
 
+            ps.close();
+
+            return 0;
+        } catch (SQLException e) {
+            return e.getErrorCode();
+        }
+    }
+
+    // Only admin can perform this
+    private int InsertAgent(AgentModel agentModel) {
+        try {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO agent VALUES (?, ?, ?)");
+            ps.setString(1, agentModel.getAgencyName());
+            ps.setInt(2, agentModel.getAgentID());
+            ps.setString(3, agentModel.getAgentName());
+
+            ps.executeUpdate();
+
+            ps = connection.prepareStatement("INSERT INTO agentPhonebook VALUES (?, ?)");
+            ps.setString(1, agentModel.getAgentName());
+            ps.setString(2, agentModel.getPhoneNumber());
+
+            ps.executeUpdate();
+            connection.commit();
             ps.close();
 
             return 0;

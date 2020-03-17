@@ -3,23 +3,36 @@ import model.ListingType;
 import model.PropertyModel;
 
 public class EstateEventHandler {
-    // forwards formatted SQL of corresponding event to database
-    // Filter based on
-        // resource, listing attributes, community
-    // Detail of specific building
+    // This class should contain the corresponding handler for UI interactions, and call the corresponding methods in
+    // database manager to perform desired update.
 
-    // Actions:
-        // InsertPropertyListing
-        // InsertAgent
-        // InsertAgency
-        // UpdatePropertyResources
-        // UpdatePropertyCommunity
-        // UpdatePropertyManagement
-        // UpdateNeighbourInformation (select like...)
-        // UpdateListingDetail
-        // DeleteListing
+    // Possible actions include:
+        // As customer:
+            // Search property
+                // By resources
+                // By agency
+                // By Community
+                // By city
+                // By type
+                // By price
+            // Search public resources
+            // Search agency/ agent
+
+        // As an agent:
+            // InsertPropertyListing
+            // UpdatePropertyResources
+            // UpdatePropertyCommunity
+            // UpdatePropertyManagement
+            // UpdateNeighbourInformation (select like...)
+            // UpdateListingDetail
+            // Take Down Listing
+
+        // As administrator:
+            // InsertAgent
+            // InsertAgency
     private static EstateDatabaseManager manager = EstateDatabaseManager.getInstance();
-    private static int nextID = 1;
+    private static int nextListingID = 1;
+    private static int nextAgentID = 1;
 
     public int InsertPropertyListing(PropertyModel property, int agentID, int listingPrice, ListingType listingType){
         manager.InsertProperty(property);
@@ -27,8 +40,11 @@ public class EstateEventHandler {
         return 0;
     }
 
-    public static int getnextID(){
-        return ++nextID;
+    public static int getNextListingID(){
+        return ++nextListingID;
     }
 
+    public static int getNextAgentID() {
+        return ++nextAgentID;
+    }
 }

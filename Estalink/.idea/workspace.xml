@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0fda6d56-ebda-4562-af8b-b3ecb29ef6d0" name="Default Changelist" comment="" />
+    <list default="true" id="0fda6d56-ebda-4562-af8b-b3ecb29ef6d0" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/EstateDatabaseManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/EstateDatabaseManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/EstateEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/EstateEventHandler.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,7 +20,11 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
   <component name="ProjectId" id="1Z9WSiKPJglGXpPOGu4HPAPomVH" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
@@ -23,7 +32,8 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/lib/ojdbc8.jar!/" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -98,10 +108,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584254162933" />
-    <state x="765" y="222" key="#com.intellij.ide.util.MemberChooser" timestamp="1584345032620">
+    <state x="765" y="222" key="#com.intellij.ide.util.MemberChooser" timestamp="1584417621495">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="222" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1584345032620" />
+    <state x="765" y="222" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1584417621495" />
     <state x="689" y="305" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1584254162436">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
