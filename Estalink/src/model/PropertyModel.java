@@ -1,5 +1,7 @@
 package model;
 
+import types.PropertyType;
+
 public class PropertyModel {
     private String property_address;
     private String property_dimension;

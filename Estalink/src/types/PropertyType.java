@@ -1,4 +1,4 @@
-package model;
+package types;
 
 public enum PropertyType {
     House, Apartment, Office

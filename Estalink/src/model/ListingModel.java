@@ -1,5 +1,7 @@
 package model;
 
+import types.ListingType;
+
 public class ListingModel {
     private int listing_ID;
     private int listing_Price;

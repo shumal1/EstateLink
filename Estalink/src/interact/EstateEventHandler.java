@@ -1,5 +1,7 @@
-import model.AgentModel;
-import model.ListingType;
+package interact;
+
+import types.AccountMode;
+import types.ListingType;
 import model.PropertyModel;
 
 public class EstateEventHandler {
@@ -38,6 +40,10 @@ public class EstateEventHandler {
         manager.InsertProperty(property);
         manager.InsertListing(property.getListingID(), agentID, listingPrice, listingType);
         return 0;
+    }
+
+    public void changeMode(AccountMode mode, String userID, String password) {
+        manager.changeMode(mode, userID, password);
     }
 
     public static int getNextListingID(){
