@@ -36,12 +36,6 @@ public class EstateEventHandler {
     private static int nextListingID = 1;
     private static int nextAgentID = 1;
 
-    public int InsertPropertyListing(PropertyModel property, int agentID, int listingPrice, ListingType listingType){
-        manager.InsertProperty(property);
-        manager.InsertListing(property.getListingID(), agentID, listingPrice, listingType);
-        return 0;
-    }
-
     public void changeMode(AccountMode mode, String userID, String password) {
         manager.changeMode(mode, userID, password);
     }

@@ -14,7 +14,7 @@ import java.util.StringJoiner;
 
 public class EstateDatabaseManager {
     // responsible for creating connections, populating the tables, etc, and execute query.
-    private static volatile EstateDatabaseManager instance;
+    private static EstateDatabaseManager instance = null;
     private AccountMode mode;
     private Connection connection;
     private AgentConnector agentConnector;
@@ -24,13 +24,20 @@ public class EstateDatabaseManager {
     private final String ADMIN_UID = "ADMIN";
     private final String ADMIN_PWD = "cs304";
 
-    public static EstateDatabaseManager getInstance() {
-        synchronized(EstateDatabaseManager.class) {
-            if (instance == null) {
-                instance = new EstateDatabaseManager();
-            }
+    public static synchronized EstateDatabaseManager getInstance() {
+        if (instance == null) {
+            instance = new EstateDatabaseManager();
+            instance.setupConnectors();
         }
         return instance;
+    }
+
+    private void setupConnectors() {
+        // don't do them in the constructor -- causes synchronization issue.
+        this.agentConnector = new AgentConnector();
+        this.resourcesConnector = new ResourcesConnector();
+        this.propertyConnector = new PropertyConnector();
+        this.listingConnector = new ListingConnector();
     }
 
     private EstateDatabaseManager(){
@@ -38,10 +45,7 @@ public class EstateDatabaseManager {
         InitializeConnection();
         // initialize tables with drop table
 
-        this.agentConnector = new AgentConnector();
-        this.resourcesConnector = new ResourcesConnector();
-        this.propertyConnector = new PropertyConnector();
-        this.listingConnector = new ListingConnector();
+        this.mode = AccountMode.ADMIN;
     }
 
     private void InitializeConnection(){
@@ -53,96 +57,6 @@ public class EstateDatabaseManager {
         } catch (Exception e) {
             // silently ignore (for now)
             System.out.println(e);
-        }
-    }
-
-    private void ExecuteSQLStatement(String query){
-        // Sample selection query
-        System.out.println("Executing " + query);
-        try {
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
-            ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
-            while (resultSet.next()) {
-                StringJoiner st = new StringJoiner("|");
-                for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
-                    int type = resultSetMetaData.getColumnType(i);
-                    if (type == Types.VARCHAR || type == Types.CHAR) {
-                        st.add(resultSet.getString(i));
-                    } else {
-                        st.add(String.valueOf(resultSet.getLong(i)));
-                    }
-                }
-                System.out.println(st.toString());
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-
-    public int InsertListing(int listingID, int agentID, int listingPrice, ListingType listingType){
-        try {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO listing VALUES (?, ?, ?, ?, ?)");
-            ps.setInt(1, listingID);
-            ps.setInt(2, agentID);
-            ps.setInt(3, listingPrice);
-            ps.setString(5, listingType.name());
-
-            ps.executeUpdate();
-            connection.commit();
-
-            ps.close();
-
-            return 0;
-        } catch (SQLException e) {
-            return e.getErrorCode();
-        }
-    }
-
-    public int InsertProperty(PropertyModel propertyModel) {
-        try {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO property VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            ps.setString(1, propertyModel.getAddress());
-            ps.setString(2, propertyModel.getDimension());
-            ps.setString(3, propertyModel.getPostalCode());
-            ps.setInt(4, propertyModel.getListingID());
-            ps.setBoolean(5, propertyModel.isDuplex());
-            ps.setInt(6, propertyModel.getApartmentNumber());
-            ps.setInt(7,propertyModel.getCapacity());
-            ps.setString(8, propertyModel.getType().name());
-
-            ps.executeUpdate();
-            connection.commit();
-
-            ps.close();
-
-            return 0;
-        } catch (SQLException e) {
-            return e.getErrorCode();
-        }
-    }
-
-    // Only admin can perform this
-    private int InsertAgent(AgentModel agentModel) {
-        try {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO agent VALUES (?, ?, ?)");
-            ps.setString(1, agentModel.getAgencyName());
-            ps.setInt(2, agentModel.getAgentID());
-            ps.setString(3, agentModel.getAgentName());
-
-            ps.executeUpdate();
-
-            ps = connection.prepareStatement("INSERT INTO agentPhonebook VALUES (?, ?)");
-            ps.setString(1, agentModel.getAgentName());
-            ps.setString(2, agentModel.getPhoneNumber());
-
-            ps.executeUpdate();
-            connection.commit();
-            ps.close();
-
-            return 0;
-        } catch (SQLException e) {
-            return e.getErrorCode();
         }
     }
 
@@ -173,5 +87,26 @@ public class EstateDatabaseManager {
 
     public AccountMode getCurrentMode() {
         return this.mode;
+    }
+
+    public Connection getConnection() {
+        return this.connection;
+    }
+
+
+    public AgentConnector getAgentConnector() {
+        return agentConnector;
+    }
+
+    public ResourcesConnector getResourcesConnector() {
+        return resourcesConnector;
+    }
+
+    public PropertyConnector getPropertyConnector() {
+        return propertyConnector;
+    }
+
+    public ListingConnector getListingConnector() {
+        return listingConnector;
     }
 }
