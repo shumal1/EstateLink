@@ -98,7 +98,7 @@ CREATE TABLE neighbour
 	PRIMARY KEY (building_address, neighbour_address),
 	FOREIGN KEY (building_address, neighbour_address) REFERENCES property
 		ON DELETE CASCADE
-		ON UPDATE RESTRICT,
+		ON UPDATE RESTRICT
 	);
 grant select on neighbour to public;
 
