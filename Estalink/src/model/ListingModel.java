@@ -2,12 +2,11 @@ package model;
 
 import types.ListingType;
 
-public class ListingModel {
+public class ListingModel implements Model{
     private int listing_ID;
     private int listing_Price;
     private int listing_HistPrice;
     private int listing_agentID;
-
     private ListingType listing_type;
 
     public ListingModel(int listing_ID, int listing_Price, int listing_HistPrice, int agent_ID, ListingType type) {
@@ -36,5 +35,15 @@ public class ListingModel {
 
     public ListingType getListingType() {
         return listing_type;
+    }
+
+
+    public String[] getData(){
+        return new String[]{Integer.toString(listing_ID), Integer.toString(listing_Price),
+                Integer.toString(listing_HistPrice), Integer.toString(listing_HistPrice), listing_type.name()};
+    }
+
+    public String[] getFieldNames(){
+        return new String[]{"listing_ID", "listing_Price", "listing_HistPrice", "listing_agentID", "listing_type"};
     }
 }

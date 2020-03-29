@@ -45,5 +45,13 @@ public class ResourceModel {
         return hospital_type;
     }
 
+    public String[] getData(){
+        return new String[]{Integer.toString(resource_ID), resource_name, resource_type.name(), bus_type.name(),
+                park_description, hospital_type.name()};
+    }
 
+    public String[] getFieldNames(){
+        return new String[]{"resource_ID", "resource_name", "resource_type", "bus_type",
+                "park_description", "hospital_type"};
+    }
 }
