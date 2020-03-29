@@ -1,6 +1,6 @@
 package model;
 
-public class AgencyModel {
+public class AgencyModel implements Model{
     private String agency_name;
     private String agency_address;
     private String agency_description;
@@ -30,7 +30,13 @@ public class AgencyModel {
         return agency_rating;
     }
 
+    public String[] getData(){
+        return new String[]{agency_name, agency_address, agency_description, Double.toString(agency_rating)};
+    }
 
+    public String[] getFieldNames(){
+        return new String[]{"agency_name", "agency_address", "agency_description", "agency_rating"};
+    }
 
 
 }

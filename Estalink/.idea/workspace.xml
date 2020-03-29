@@ -2,12 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0fda6d56-ebda-4562-af8b-b3ecb29ef6d0" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/interact/EstateLink.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/connector/AgentConnector.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/connector/AgentConnector.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interact/EstateDatabaseManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/interact/EstateDatabaseManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interact/EstateEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/interact/EstateEventHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interact/EstateLinkGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/interact/EstateLinkGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/interact/EstateEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/interact/EstateTransactionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/interact/EstateLinkGUI.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/AgencyModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/AgencyModel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model/AgentModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/AgentModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/ListingModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/ListingModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/PropertyModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/PropertyModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/model/ResourceModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/ResourceModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types/AccountMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/AccountMode.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,23 +44,14 @@
     <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.Java" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
-  <component name="RunManager" selected="Application.EstateLinkGUI">
-    <configuration name="EstateLinkGUI" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+  <component name="RunManager">
+    <configuration name="EstateLink" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="ALTERNATIVE_JRE_PATH" value="11" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="INCLUDE_PROVIDED_SCOPE" value="true" />
-      <option name="MAIN_CLASS_NAME" value="interact.EstateLinkGUI" />
-      <module name="Estalink" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Unnamed" type="Application" factoryName="Application" nameIsGenerated="true">
-      <option name="ALTERNATIVE_JRE_PATH" value="11" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
-      <option name="INCLUDE_PROVIDED_SCOPE" value="true" />
+      <option name="MAIN_CLASS_NAME" value="interact.EstateLink" />
       <module name="Estalink" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -70,10 +66,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <list>
-      <item itemvalue="Application.Unnamed" />
-      <item itemvalue="Application.EstateLinkGUI" />
-    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.EstateLinkGUI" />
@@ -106,62 +98,70 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1584254162933">
+    <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1585442316453">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584254162933" />
-    <state x="765" y="222" key="#com.intellij.ide.util.MemberChooser" timestamp="1584849039211">
+    <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585442316453" />
+    <state x="765" y="222" key="#com.intellij.ide.util.MemberChooser" timestamp="1585467104279">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="222" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1584849039211" />
-    <state x="689" y="305" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1584254162436">
+    <state x="765" y="222" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1585467104279" />
+    <state x="689" y="305" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1585442149264">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="689" y="305" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584254162436" />
+    <state x="689" y="305" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585442149264" />
     <state x="518" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1584344492378">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="518" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584344492378" />
+    <state width="402" height="466" key="DebuggerActiveHint" timestamp="1585466699622">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="402" height="466" key="DebuggerActiveHint/0.0.1920.1040@0.0.1920.1040" timestamp="1585466699622" />
     <state x="740" y="276" key="FileChooserDialogImpl" timestamp="1584254312414">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="276" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1584254312414" />
-    <state width="1877" height="198" key="GridCell.Tab.0.bottom" timestamp="1584850646456">
+    <state width="1877" height="194" key="GridCell.Tab.0.bottom" timestamp="1585467041520">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="198" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1584850646456" />
-    <state width="1877" height="198" key="GridCell.Tab.0.center" timestamp="1584850646455">
+    <state width="1877" height="194" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1585467041520" />
+    <state width="1877" height="194" key="GridCell.Tab.0.center" timestamp="1585467041520">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="198" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1584850646455" />
-    <state width="1877" height="198" key="GridCell.Tab.0.left" timestamp="1584850646455">
+    <state width="1877" height="194" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1585467041520" />
+    <state width="1877" height="194" key="GridCell.Tab.0.left" timestamp="1585467041520">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="198" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1584850646455" />
-    <state width="1877" height="198" key="GridCell.Tab.0.right" timestamp="1584850646456">
+    <state width="1877" height="194" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1585467041520" />
+    <state width="1877" height="194" key="GridCell.Tab.0.right" timestamp="1585467041520">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="198" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1584850646456" />
-    <state width="1877" height="313" key="GridCell.Tab.1.bottom" timestamp="1584850554794">
+    <state width="1877" height="194" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1585467041520" />
+    <state width="1877" height="255" key="GridCell.Tab.1.bottom" timestamp="1585466838828">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="313" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1584850554794" />
-    <state width="1877" height="313" key="GridCell.Tab.1.center" timestamp="1584850554794">
+    <state width="1877" height="255" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1585466838828" />
+    <state width="1877" height="255" key="GridCell.Tab.1.center" timestamp="1585466838828">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="313" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1584850554794" />
-    <state width="1877" height="313" key="GridCell.Tab.1.left" timestamp="1584850554794">
+    <state width="1877" height="255" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1585466838828" />
+    <state width="1877" height="255" key="GridCell.Tab.1.left" timestamp="1585466838828">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="313" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1584850554794" />
-    <state width="1877" height="313" key="GridCell.Tab.1.right" timestamp="1584850554794">
+    <state width="1877" height="255" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1585466838828" />
+    <state width="1877" height="255" key="GridCell.Tab.1.right" timestamp="1585466838828">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="313" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1584850554794" />
-    <state x="461" y="163" width="1040" height="848" key="SettingsEditor" timestamp="1584831141243">
+    <state width="1877" height="255" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1585466838828" />
+    <state x="461" y="163" width="1040" height="848" key="SettingsEditor" timestamp="1585442668333">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="461" y="163" width="1040" height="848" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1584831141243" />
+    <state x="461" y="163" width="1040" height="848" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1585442668333" />
+    <state x="342" y="141" key="new project wizard" timestamp="1585464533202">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="342" y="141" key="new project wizard/0.0.1920.1040@0.0.1920.1040" timestamp="1585464533202" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -175,14 +175,14 @@
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/interact/EstateDatabaseManager.java</url>
-          <line>51</line>
-          <option name="timeStamp" value="3" />
+          <url>file://$PROJECT_DIR$/src/connector/AgentConnector.java</url>
+          <line>97</line>
+          <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/connector/AgentConnector.java</url>
-          <line>72</line>
-          <option name="timeStamp" value="5" />
+          <url>file://$PROJECT_DIR$/src/interact/EstateTransactionHandler.java</url>
+          <line>77</line>
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
