@@ -47,7 +47,7 @@ CREATE TABLE listing
 grant select on listing to public;
 
 CREATE TABLE community
-	(community_name VARCHAR(255)
+	(community_name VARCHAR(255),
 	community_population INT,
 	community_city VARCHAR(255),
 	PRIMARY KEY (community_name, community_city)
@@ -61,8 +61,8 @@ CREATE TABLE property
 	property_type VARCHAR(20),
 	dimension VARCHAR(255),
 	postal_code VARCHAR(20),
-	is_duplex BOOL,
-	apartment_number INT
+	is_duplex BIT,
+	apartment_number INT,
 	capacity INT,
 	PRIMARY KEY (property_address, listing_id),
 	FOREIGN KEY (listing_id) REFERENCES listing
@@ -234,27 +234,6 @@ VALUES (4, 'Vancouver General Hospital');
 
 INSERT INTO public_resources
 VALUES (5, 'Arbutus Greenway', );
-
-
-
-INSERT INTO bus
-VALUES (1, 'R4', 1, 1, null, null);
-
-INSERT INTO park
-VALUES (2, 'Deer Lake Park', 2, null, 'Welcome to deer lake park where you can enjoy family gathering!', null);
-
-INSERT INTO skytrain
-VALUES (3, 'Canada Line', 1, 2, null, null);
-
-INSERT INTO hospital
-VALUES (4, 'Vancouver General Hospital', 3, null, null, 1);
-
-INSERT INTO greenwalk
-VALUES (5, 'Arbutus Greenway', 4, null, null, null);
-
-INSERT INTO neighbour
-VALUES ('5020 Yew Street, Vancouver', '5025 Yew Street, Vancouver');
-
 
 INSERT INTO property_in_community
 VALUES ('6218 King Edward, Vancouver', 'Wellingdon', 'Burnaby');
