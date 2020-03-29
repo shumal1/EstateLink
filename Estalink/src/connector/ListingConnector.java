@@ -142,13 +142,14 @@ public class ListingConnector extends Connector{
 
     }
 
-    public ListingModel[] getListingByPrice(ListingType type, String filter, int price) {
+    public ListingModel[] getListingByPrice(ListingType type, int price) {
         Connection connection = this.manager.getConnection();
         try {
             ListingModel[] listingModels = new ListingModel[999];
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Listing WHERE listing_price = (?)");
-
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Listing WHERE listing_price = (?) AND" +
+                    " listing_type = (?)");
             ps.setInt(1, price);
+            ps.setString(2, type.toString());
             ResultSet resultSet = ps.executeQuery();
 
             int i = 0;
@@ -164,9 +165,33 @@ public class ListingConnector extends Connector{
         }
     }
 
-    public ListingModel[] getListingByPercentageChange(ListingType type, int price) {
-        // TODO: Implement this
-        return null;
+    public ListingModel[] getListingByPercentageChange(ListingType type, double priceChange, boolean isGreater) {
+        Connection connection = this.manager.getConnection();
+        try {
+            ListingModel[] listingModels = new ListingModel[999];
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Listing " +
+                    "WHERE listing_type = (?) AND listing_pirce/historical_price > (?)");
+
+            if (!isGreater){
+                ps = connection.prepareStatement("SELECT * FROM Listing " +
+                        "WHERE listing_type = (?) AND listing_pirce/historical_price <= (?)");
+            }
+
+            ps.setString(1, type.toString());
+            ps.setDouble(2, priceChange);
+            ResultSet resultSet = ps.executeQuery();
+
+            int i = 0;
+            while (resultSet.next()) {
+                listingModels[i] = getListingModel(ps, resultSet);
+                i++;
+            }
+            return listingModels;
+
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
+        }
     }
 
     private ListingModel getListingModel(PreparedStatement ps, ResultSet resultSet) throws  SQLException {
@@ -181,4 +206,5 @@ public class ListingConnector extends Connector{
         return new ListingModel(id, price, historical_price, agent_id, listingType);
 
     }
+
 }
