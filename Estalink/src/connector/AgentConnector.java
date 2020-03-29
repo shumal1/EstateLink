@@ -104,7 +104,6 @@ public class AgentConnector extends Connector{
             ps.setString(1, lookup_name);
 
             ResultSet resultSet = ps.executeQuery();
-            ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             if (resultSet.next()) {
                 String agency_name = resultSet.getString(1);
                 String agency_address = resultSet.getString(2);

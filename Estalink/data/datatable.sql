@@ -14,7 +14,7 @@ CREATE TABLE agency_employee
 	(agent_id INT,
 	agent_name VARCHAR(255),
 	agency_name VARCHAR(255),
-	agent_phone_number INT,
+	agent_phone_number VARCHAR(255),
 	PRIMARY KEY (agent_id),
 	FOREIGN KEY (agency_name) REFERENCES agency 
 		ON DELETE CASCADE 
