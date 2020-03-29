@@ -31,9 +31,9 @@ public class ManagementConnector extends Connector {
     public boolean updateManagementForProperty(String agency_name, String property_address) {
         Connection connection = this.manager.getConnection();
         try {
-            PreparedStatement ps = connection.prepareStatement("UPDATE  property_management VALUES (?, ?)");
-            ps.setString(1, agency_name);
-            ps.setString(2, address);
+            PreparedStatement ps = connection.prepareStatement("UPDATE property_management SET property_address = ? WHERE agency_name = ?");
+            ps.setString(1, property_address);
+            ps.setString(2, agency_name);
 
             ps.executeUpdate();
             connection.commit();
