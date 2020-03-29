@@ -1,6 +1,6 @@
 package model;
 
-public class AgentModel {
+public class AgentModel implements Model{
     private int agent_ID;
     private String agent_name;
     private String agent_agencyName;
@@ -27,5 +27,13 @@ public class AgentModel {
 
     public String getPhoneNumber() {
         return agent_phoneNumber;
+    }
+
+    public String[] getData(){
+        return new String[]{Integer.toString(agent_ID), agent_name, agent_agencyName, agent_phoneNumber};
+    }
+
+    public String[] getFieldNames(){
+        return new String[]{"agent_ID", "agent_name", "agent_agencyName", "agent_phoneNumber"};
     }
 }

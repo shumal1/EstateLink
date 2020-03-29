@@ -1,5 +1,5 @@
 package types;
 
 public enum AccountMode {
-    ADMIN, AGENT, GUEST
+    ADMIN, AGENT, GUEST, INVALID
 }

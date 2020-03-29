@@ -40,6 +40,31 @@ public class AgentConnector extends Connector{
         } catch (SQLException e) {
             lasterr = e.getMessage();
             return false;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public int getNextAgentID() {
+        // Select Count(*) from Agency_Employee where Agent_Name = username and Agent_ID = password;
+        // used for login
+        Connection connection = this.manager.getConnection();
+        int result = -1;
+        try {
+            PreparedStatement ps = connection.prepareStatement(
+                    "SELECT MAX(Agent_id) from Agency_Employee");
+
+            ResultSet resultSet = ps.executeQuery();
+
+            if(resultSet.next()) {
+                result = resultSet.getInt(1) + 1;
+            }
+
+            ps.close();
+            return result;
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return -1;
         }
     }
 
@@ -104,7 +129,6 @@ public class AgentConnector extends Connector{
             ps.setString(1, lookup_name);
 
             ResultSet resultSet = ps.executeQuery();
-            ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             if (resultSet.next()) {
                 String agency_name = resultSet.getString(1);
                 String agency_address = resultSet.getString(2);
