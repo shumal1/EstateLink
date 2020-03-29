@@ -70,7 +70,6 @@ public class ListingConnector extends Connector{
     }
 
     public boolean UpdateListingAgent(int listing_id, int agentID) {
-        // TODO: Implement this
         // call updateManagementForProperty here
         if (!checkMode(AccountMode.ADMIN)) {
             return false;
