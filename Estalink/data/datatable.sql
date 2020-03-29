@@ -6,7 +6,7 @@ DROP TABLE property;
 DROP TABLE public_resources;
 DROP TABLE property_management;
 DROP TABLE neighbour;
-DROP TABLE propert_in_community;
+DROP TABLE property_in_community;
 DROP TABLE has_property_and_resources;
 
 
@@ -102,7 +102,7 @@ CREATE TABLE neighbour
 	);
 grant select on neighbour to public;
 
-CREATE TABLE propert_in_community
+CREATE TABLE property_in_community
 	(property_address VARCHAR(255),
 	community_name VARCHAR(255),
 	community_city VARCHAR(255),
@@ -112,7 +112,7 @@ CREATE TABLE propert_in_community
 		ON UPDATE RESTRICT,
 	FOREIGN KEY(community_name, community_city) REFERENCES community
 	);
-grant select on propert_in_community to public;
+grant select on property_in_community to public;
 
 CREATE TABLE has_property_and_resources
 	(resource_id INT,
@@ -256,22 +256,22 @@ INSERT INTO neighbour
 VALUES ('5020 Yew Street, Vancouver', '5025 Yew Street, Vancouver');
 
 
-INSERT INTO propert_in_community
+INSERT INTO property_in_community
 VALUES ('6218 King Edward, Vancouver', 'Wellingdon', 'Burnaby');
 
-INSERT INTO propert_in_community
+INSERT INTO property_in_community
 VALUES ('1250 Maple Street, Vancouver', 'Kerrisdale', 'Vancouver');
 
-INSERT INTO propert_in_community
+INSERT INTO property_in_community
 VALUES ('2118 Great Lake Way, Vancouver', 'Lougheed', 'Burnaby');
 
-INSERT INTO propert_in_community
+INSERT INTO property_in_community
 VALUES ('4040 Howe Street, Vancouver', 'Downtown', 'Vancouver');
 
-INSERT INTO propert_in_community
+INSERT INTO property_in_community
 VALUES ('5020 Yew Street, Vancouver', 'Kerrisdale', 'Vancouver');
 
-INSERT INTO propert_in_community
+INSERT INTO property_in_community
 VALUES ('5025 Yew Street, Vancouver', 'Kerrisdale', 'Vancouver');
 
 
