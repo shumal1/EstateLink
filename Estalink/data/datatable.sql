@@ -61,7 +61,7 @@ CREATE TABLE property
 	property_type VARCHAR(20),
 	dimension VARCHAR(255),
 	postal_code VARCHAR(20),
-	is_duplex BIT,
+	is_duplex BOOL,
 	apartment_number INT,
 	capacity INT,
 	PRIMARY KEY (property_address, listing_id),
@@ -196,22 +196,22 @@ INSERT INTO community
 VALUES('Downtown', 45000, 'Vancouver');
 
 INSERT INTO property
-VALUES('5025 Yew Street, Vancouver', 1, 'Apartment', '1477 ft', 'V6S 1W7',0,205, null);
+VALUES('5025 Yew Street, Vancouver', 1, 'Apartment', '1477 ft', 'V6S 1W7',false,205, null);
 
 INSERT INTO property
-VALUES('6218 King Edward, Vancouver', 2, 'Office Unit', '10000 ft', 'V3M 3M3',0,null, 8);
+VALUES('6218 King Edward, Vancouver', 2, 'Office', '10000 ft', 'V3M 3M3',false,null, 8);
 
 INSERT INTO property
-VALUES('5020 Yew Street, Vancouver', 3, 'Apartment', '980 ft', 'V6M 1S1',0,101, null);
+VALUES('5020 Yew Street, Vancouver', 3, 'Apartment', '980 ft', 'V6M 1S1',false,101, null);
 
 INSERT INTO property
-VALUES('2118 Great Lake Way, Vancouver', 4, 'Office Unit', '9700 ft', 'V3S 1Q7',0,null, 12);
+VALUES('2118 Great Lake Way, Vancouver', 4, 'Office', '9700 ft', 'V3S 1Q7',false,null, 12);
 
 INSERT INTO property
-VALUES('4040 Howe Street, Vancouver', 5, 'House', '3652 ft', 'V2S 1S3',0,null, null);
+VALUES('4040 Howe Street, Vancouver', 5, 'House', '3652 ft', 'V2S 1S3',false,null, null);
 
 INSERT INTO property
-VALUES('1250 Maple Street, Vancouver', 6, 'Apartment', '2500 ft', 'V6M 1L8',1,333, null);
+VALUES('1250 Maple Street, Vancouver', 6, 'Apartment', '2500 ft', 'V6M 1L8',true,333, null);
 
 
 
