@@ -78,26 +78,4 @@ public class PropertyConnector extends Connector {
         // TODO: Implement this
         return null;
     }
-
-    //Helper Method requested by Jason
-    private int maxListingIDForProperty() {
-        Connection connection = this.manager.getConnection();
-        try {
-            System.out.println("Executing SELECT MAX(listing_id) FROM property");
-            PreparedStatement ps = connection.prepareStatement("SELECT MAX(listing_id) FROM property");
-
-            ResultSet resultSet = ps.executeQuery();
-            if (resultSet.next()) {
-                int maxID = resultSet.getInt(1);
-                ps.close();
-                return maxID;
-            }
-            lasterr = "max listingID not found";
-            return -1;
-        } catch (SQLException e) {
-            lasterr = e.getMessage();
-            return -1;
-        }
-    }
-
 }

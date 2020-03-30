@@ -4,6 +4,11 @@ import model.ListingModel;
 import types.AccountMode;
 import types.ListingType;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class ListingConnector extends Connector{
     // Insert, update, delete on Listing
 
@@ -55,5 +60,26 @@ public class ListingConnector extends Connector{
     public ListingModel[] getListingByPercentageChange(ListingType type, int price) {
         // TODO: Implement this
         return null;
+    }
+
+    //Helper Method requested by Jason
+    public int getNextListingID() {
+        Connection connection = this.manager.getConnection();
+        try {
+            System.out.println("Executing SELECT MAX(listing_id) FROM Listings");
+            PreparedStatement ps = connection.prepareStatement("SELECT MAX(listing_id) FROM Listings");
+
+            ResultSet resultSet = ps.executeQuery();
+            if (resultSet.next()) {
+                int maxID = resultSet.getInt(1);
+                ps.close();
+                return maxID;
+            }
+            lasterr = "max listingID not found";
+            return -1;
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return -1;
+        }
     }
 }

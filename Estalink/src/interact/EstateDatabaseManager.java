@@ -5,12 +5,9 @@ import connector.ListingConnector;
 import connector.PropertyConnector;
 import connector.ResourcesConnector;
 import types.AccountMode;
-import model.AgentModel;
-import types.ListingType;
-import model.PropertyModel;
+
 
 import java.sql.*;
-import java.util.StringJoiner;
 
 public class EstateDatabaseManager {
     // responsible for creating connections, populating the tables, etc, and execute query.
@@ -43,8 +40,7 @@ public class EstateDatabaseManager {
     private EstateDatabaseManager(){
         // establish database connection
         InitializeConnection();
-        // initialize tables with drop table
-
+        // start from admin mode
         this.mode = AccountMode.ADMIN;
     }
 

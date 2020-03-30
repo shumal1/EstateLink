@@ -1,6 +1,7 @@
 package ui;
-
-
+import handler.AgentTransactionHandler;
+import handler.ListingTransactionHandler;
+import handler.ResourceTransactionHandler;
 import handler.TransactionHandler;
 import types.AccountMode;
 
@@ -14,39 +15,32 @@ public class EstateUI extends JFrame implements ActionListener {
     private JPanel mainMenu;
     private AccountMode mode;
     private CardLayout currCard;
-    private JFrame frame;
-    static enum states  {Menu, Listings, Resources, Agents};
+    private JFrame mainFrame, listingFrame, resourceFrame, agentFrame;
+    enum states  {Menu, Listings, Resources, Agents};
 
-    public EstateUI(TransactionHandler handler, AccountMode mode, String uid) {
+    public EstateUI(AgentTransactionHandler handler, AccountMode mode) {
         this.handler = handler;
         this.mode = mode;
     }
 
     public void showUI(){
-        frame = new JFrame("EstateLink");
-        frame.setSize(500,400);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        currCard = new CardLayout();
-        frame.setLayout(currCard);
+        mainFrame = new JFrame("EstateLink");
+        mainFrame.setSize(500,400);
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel listingPanel = new JPanel();
-        JPanel resourcePanel = new JPanel();
-        JPanel agentPanel = new AgentPanel(this, handler, mode);
+        resourceFrame = new ResourceFrame(this, (ResourceTransactionHandler) handler);
+        listingFrame = new ListingFrame(this, (ListingTransactionHandler) handler, mode);
+        agentFrame = new AgentFrame(this, (AgentTransactionHandler) handler, mode);
         setupMainMenu();
 
-
-        frame.add(states.Menu.name(), mainMenu);
-        frame.add(states.Listings.name(), listingPanel);
-        frame.add(states.Resources.name(), resourcePanel);
-        frame.add(states.Agents.name(), agentPanel);
 
         // center the frame
         Dimension d = this.getToolkit().getScreenSize();
         Rectangle r = this.getBounds();
-        frame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
-        currCard.show(frame.getContentPane(), states.Menu.name());
+        mainFrame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
+        mainFrame.add(mainMenu);
         // make the window visible
-        frame.setVisible(true);
+        mainFrame.setVisible(true);
     }
 
     private void setupMainMenu(){
@@ -95,10 +89,26 @@ public class EstateUI extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent actionEvent) {
         // switch panels here
         System.out.println(actionEvent.getActionCommand());
-        switchPane(actionEvent.getActionCommand());
+        switchFrame(actionEvent.getActionCommand());
     }
 
-    public void switchPane(String id) {
-        currCard.show(frame.getContentPane(), id);
+    public void switchFrame(String id) {
+        switch (id) {
+            case "Listings":
+                mainFrame.setVisible(false);
+                listingFrame.setVisible(true);
+                break;
+            case "Resources":
+                mainFrame.setVisible(false);
+                resourceFrame.setVisible(true);
+                break;
+            case "Agents":
+                mainFrame.setVisible(false);
+                agentFrame.setVisible(true);
+                break;
+            case "Menu":
+                mainFrame.setVisible(true);
+                break;
+        }
     }
 }

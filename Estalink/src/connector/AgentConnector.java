@@ -5,6 +5,7 @@ import model.AgencyModel;
 import model.AgentModel;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class AgentConnector extends Connector{
     // Access to Agency and AgencyEmployee
@@ -20,7 +21,7 @@ public class AgentConnector extends Connector{
         Connection connection = this.manager.getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement(
-                    "SELECT COUNT(*) from Agency_Employee where Agent_Name = (?) and Agent_ID = (?))");
+                    "SELECT COUNT(*) from Agency_Employee where Agent_Name = (?) and Agent_ID = (?)");
 
             ps.setString(1, username);
             ps.setInt(2, Integer.parseInt(password));
@@ -58,6 +59,7 @@ public class AgentConnector extends Connector{
 
             if(resultSet.next()) {
                 result = resultSet.getInt(1) + 1;
+                System.out.println("returning " + result);
             }
 
             ps.close();
@@ -83,14 +85,36 @@ public class AgentConnector extends Connector{
             ps.setString(4, agentModel.getPhoneNumber());
 
             ps.executeUpdate();
-            connection.commit();
-
             ps.close();
 
             return true;
         } catch (SQLException e) {
             lasterr = e.getMessage();
             return false;
+        }
+    }
+
+    public AgentModel[] getAllAgents() {
+        Connection connection = this.manager.getConnection();
+        ArrayList<AgentModel> models = new ArrayList<>();
+        try {
+            System.out.println("Executing SELECT * FROM Agency_Employee");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Agency_Employee");
+
+            ResultSet resultSet = ps.executeQuery();
+            while (resultSet.next()) {
+                int agent_id = resultSet.getInt(1);
+                String agent_name = resultSet.getString(2);
+                String agent_agencyName = resultSet.getString(3);
+                String agent_phoneNumber = resultSet.getString(4);
+                models.add(new AgentModel(agent_id, agent_name, agent_agencyName, agent_phoneNumber));
+            }
+
+            ps.close();
+            return models.toArray(new AgentModel[0]);
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
         }
     }
 
@@ -124,9 +148,14 @@ public class AgentConnector extends Connector{
     public AgencyModel getAgencyByName (String lookup_name) {
         System.out.println("Executing SELECT * FROM Agency WHERE Agency_Name = " + lookup_name);
         Connection connection = this.manager.getConnection();
+        PreparedStatement ps;
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Agency WHERE Agency_Name = (?)");
-            ps.setString(1, lookup_name);
+            if (lookup_name.equals("*")) {
+                ps = connection.prepareStatement("SELECT * FROM Agency");
+            } else {
+                ps = connection.prepareStatement("SELECT * FROM Agency WHERE Agency_Name = (?)");
+                ps.setString(1, lookup_name);
+            }
 
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {

@@ -1,48 +1,28 @@
 package interact;
 
-import handler.TransactionHandler;
-import model.AgentModel;
-import model.Model;
+import handler.AgentTransactionHandler;
+import handler.ListingTransactionHandler;
+import handler.ResourceTransactionHandler;
+import model.*;
 import types.AccountMode;
+import types.ListingType;
+import types.PropertyType;
+import types.ResourceType;
 
 import javax.swing.*;
-import javax.swing.table.TableColumn;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
-public class EstateTransactionHandler implements TransactionHandler {
-    // This class should contain the corresponding handler for UI interactions, and call the corresponding methods in
-    // database manager to perform desired update.
-
-    // Possible actions include:
-        // As customer:
-            // Search property
-                // By resources
-                // By agency
-                // By Community
-                // By city
-                // By type
-                // By price
-            // Search public resources
-            // Search agency/ agent
-
-        // As an agent:
-            // InsertPropertyListing
-            // UpdatePropertyResources
-            // UpdatePropertyCommunity
-            // UpdatePropertyManagement
-            // UpdateNeighbourInformation (select like...)
-            // UpdateListingDetail
-            // Take Down Listing
-
-        // As administrator:
-            // InsertAgent
-            // InsertAgency
+public class EstateTransactionHandler implements AgentTransactionHandler, ListingTransactionHandler, ResourceTransactionHandler {
     private static EstateDatabaseManager manager = EstateDatabaseManager.getInstance();
     private int nextListingID;
     private int nextAgentID;
 
+    private static final String SUCCESS_RESPONSE  = "SQL_SUCCESS, requested update completed";
     public EstateTransactionHandler() {
-        this.nextListingID = manager.getAgentConnector().getNextAgentID();
+        this.nextAgentID = manager.getAgentConnector().getNextAgentID();
+        this.nextListingID = manager.getListingConnector().getNextListingID();
     }
     public boolean changeMode(AccountMode mode, String userID, String password) {
         return manager.changeMode(mode, userID, password);
@@ -57,54 +37,104 @@ public class EstateTransactionHandler implements TransactionHandler {
         return AccountMode.INVALID;
     }
 
-    public AccountMode getCurrentMode() {
-        return manager.getCurrentMode();
-    }
-
-
     public int getNextListingID(){
-        return ++nextListingID;
+        return nextListingID++;
     }
 
     public int getNextAgentID() {
-        return ++nextAgentID;
+        return nextAgentID++;
     }
 
     @Override
     public JTable selectAgentByID(String id) {
-        JTable result;
         Model[] list;
-        try {
-            list = new Model[]{manager.getAgentConnector().getAgentByID(Integer.parseInt(id))};
-        } catch (NumberFormatException e) {
-            list = new Model[0];
+        if (id.equals("*")) {
+            list = manager.getAgentConnector().getAllAgents();
+        } else {
+            try {
+                list = new Model[]{manager.getAgentConnector().getAgentByID(Integer.parseInt(id))};
+            } catch (NumberFormatException e) {
+                list = new Model[0];
+            }
         }
 
-        result = constructTable(list);
-        return result;
+        return constructTable(list);
     }
 
     @Override
     public JTable selectAgencyByName(String id) {
-        JTable result;
         Model[] list;
-        try {
-            list = new Model[]{manager.getAgentConnector().getAgencyByName(id)};
-        } catch (NumberFormatException e) {
-            list = new Model[0];
-        }
-
-        result = constructTable(list);
-        return result;
+        list = new Model[]{manager.getAgentConnector().getAgencyByName(id)};
+        return constructTable(list);
     }
 
     @Override
-    public boolean insertAgent() {
+    public JTable selectAgencyByID(String id) {
+        Model[] list;
+        try {
+            list = new Model[]{manager.getAgentConnector().getAgencyByAgentID(Integer.parseInt(id))};
+        } catch (NumberFormatException e) {
+            list = new Model[0];
+        }
+        return constructTable(list);
+    }
+
+    @Override
+    public String insertAgent(String agent_name, String agent_phoneNumber, String agent_agencyName) {
+        AgentModel model = new AgentModel(this.getNextAgentID(), agent_name, agent_agencyName, agent_phoneNumber);
+        if (manager.getAgentConnector().registerAgent(model)) {
+            return SUCCESS_RESPONSE;
+        } else {
+            return manager.getAgentConnector().getLastError();
+        }
+
+    }
+
+    @Override
+    public String insertListing(int listing_Price, int agent_id, String type) {
+        return null;
+    }
+
+    @Override
+    public String updateListing(int listing_id, int new_price) {
+        return null;
+    }
+
+    @Override
+    public boolean deleteListing(int listing_id) {
         return false;
     }
 
+    @Override
+    public JTable getListingByCondition(int id, int price, boolean higher, ListingType type) {
+        return null;
+    }
+
+    @Override
+    public JTable getPropertyByCondition(String address, PropertyType type) {
+        return null;
+    }
+
+    @Override
+    public JTable getResourceByType(ResourceType type) {
+        return null;
+    }
+
+    @Override
+    public JTable getPropertyByResourceType(ResourceType type) {
+        return null;
+    }
+
+
+    // IMPORTANT! USE THIS HELPER TO RETURN JTABLE
     private JTable constructTable(Model[] models) {
         JTable result;
+        if (models != null) {
+            ArrayList<Model> modelArray = new ArrayList<>(Arrays.asList(models));
+            modelArray.removeAll(Collections.singleton(null));
+            models = modelArray.toArray(new Model[0]);
+        }
+
         if (models.length > 0) {
             ArrayList<String[]> data = new ArrayList<String[]>();
             for (Model model : models) {
@@ -118,4 +148,5 @@ public class EstateTransactionHandler implements TransactionHandler {
         }
         return result;
     }
+
 }
