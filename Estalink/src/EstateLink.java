@@ -34,17 +34,18 @@ public class EstateLink implements AuthenticationHandler {
         au.authenticate();
     }
 
-    public void HandleLogin(AccountMode mode, String uid, String pwd) {
-        authenticated = transactionHandler.changeMode(mode, uid, pwd);
-        au.displayResult(authenticated);
-        if (authenticated) {
-            // show main menu
-            this.mode = mode;
-            au.dispose();
-            interact();
-        } else {
-            // login failed, try again
+    public boolean HandleLogin(AccountMode mode, String uid, String pwd, String db_uid, String db_pwd) {
+        if (transactionHandler.dbLogon(db_uid, db_pwd)) {
+            authenticated = transactionHandler.changeMode(mode, uid, pwd);
+            if (authenticated) {
+                // show main menu
+                this.mode = mode;
+                au.dispose();
+                interact();
+                return true;
+            }
         }
+        return false;
     }
 
     public void interact(){

@@ -19,7 +19,9 @@ public interface ListingTransactionHandler extends TransactionHandler {
         // Resource
         // Community
 
-    String insertListing(int listing_Price, int agent_id, String type);
+    String insertPropertyListing(String property_address, PropertyType property_type, String property_dimension,
+                                 String property_postalCode, boolean isDuplex, String property_apartmentNumber, int capacity,
+                                 int listing_id, int listing_price, ListingType listing_type, int agent_id);
     String updateListing(int listing_id, int new_price);
     boolean deleteListing(int listing_id);
 

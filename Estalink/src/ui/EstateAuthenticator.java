@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 
 public class EstateAuthenticator extends JFrame implements ActionListener {
     private JFrame frame;
-    private JTextField uidText, pwdText;
+    private JTextField uidText, pwdText, db_uid, db_pwd;
     private JComboBox<String> accountType;
     private AuthenticationHandler handler;
 
@@ -18,7 +18,7 @@ public class EstateAuthenticator extends JFrame implements ActionListener {
 
     public void authenticate() {
         frame = new JFrame("Authentication");
-        frame.setSize(350, 200);
+        frame.setSize(400, 250);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel();
@@ -51,8 +51,24 @@ public class EstateAuthenticator extends JFrame implements ActionListener {
         pwdText.setBounds(100, 80, 165, 25);
         panel.add(pwdText);
 
+        JLabel databaseLabel = new JLabel("Database Username:");
+        databaseLabel.setBounds(10, 125, 160, 25);
+        panel.add(databaseLabel);
+
+        db_uid = new JTextField(20);
+        db_uid.setBounds(175, 125, 165, 25);
+        panel.add(db_uid);
+
+        JLabel databasePassword = new JLabel("Database Password:");
+        databasePassword.setBounds(10, 150, 160, 25);
+        panel.add(databasePassword);
+
+        db_pwd = new JPasswordField(20);
+        db_pwd.setBounds(175, 150, 165, 25);
+        panel.add(db_pwd);
+
         JButton loginButton = new JButton("login");
-        loginButton.setBounds(10, 110, 80, 25);
+        loginButton.setBounds(10, 175, 80, 25);
         panel.add(loginButton);
         loginButton.addActionListener(this);
         frame.setVisible(true);
@@ -60,8 +76,10 @@ public class EstateAuthenticator extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        handler.HandleLogin(EstateTransactionHandler.getModeByName((String) accountType.getSelectedItem()),
-                uidText.getText(), pwdText.getText());
+        if (actionEvent.getActionCommand().equals("login")) {
+           displayResult(handler.HandleLogin(EstateTransactionHandler.getModeByName((String) accountType.getSelectedItem()),
+                    uidText.getText(), pwdText.getText(), db_uid.getText(), db_pwd.getText()));
+        }
     }
 
     public void dispose(){
@@ -75,10 +93,12 @@ public class EstateAuthenticator extends JFrame implements ActionListener {
                     "Successfully logged-in");
         } else {
             JOptionPane.showMessageDialog(frame,
-                    "Incorrect username/password",
+                    "Incorrect username/password/ Unable to connect to the database",
                     "Authentication warning",
                     JOptionPane.WARNING_MESSAGE);
         }
-    }
 
+        pwdText.setText("");
+        db_pwd.setText("");
+    }
 }

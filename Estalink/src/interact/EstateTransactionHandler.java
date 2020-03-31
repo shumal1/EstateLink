@@ -18,13 +18,12 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
     private static EstateDatabaseManager manager = EstateDatabaseManager.getInstance();
     private int nextListingID;
     private int nextAgentID;
+    private String currUID;
 
     private static final String SUCCESS_RESPONSE  = "SQL_SUCCESS, requested update completed";
-    public EstateTransactionHandler() {
-        this.nextAgentID = manager.getAgentConnector().getNextAgentID();
-        this.nextListingID = manager.getListingConnector().getNextListingID();
-    }
+
     public boolean changeMode(AccountMode mode, String userID, String password) {
+        this.currUID = userID;
         return manager.changeMode(mode, userID, password);
     }
 
@@ -35,6 +34,19 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
             }
         }
         return AccountMode.INVALID;
+    }
+
+    public boolean dbLogon(String uid, String pwd) {
+        boolean result = manager.InitializeConnection(uid, pwd);
+        if (result) {
+            this.nextAgentID = manager.getAgentConnector().getNextAgentID();
+            this.nextListingID = manager.getListingConnector().getNextListingID();
+        }
+        return result;
+    }
+
+    public AccountMode getCurrentMode(){
+        return manager.getCurrentMode();
     }
 
     public int getNextListingID(){
@@ -90,8 +102,13 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
 
     }
 
+    // TODO Implement methods here for usage in UI, feel free to update if needed.
     @Override
-    public String insertListing(int listing_Price, int agent_id, String type) {
+    public String insertPropertyListing(String property_address, PropertyType property_type, String property_dimension,
+                                 String property_postalCode, boolean isDuplex, String property_apartmentNumber, int capacity,
+                                 int listing_id, int listing_price, ListingType listing_type, int agent_id) {
+        // note that admin has an agent id of 0.
+        // in ui, call getCurrentAgentID() to get the id.
         return null;
     }
 
@@ -123,6 +140,28 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
     @Override
     public JTable getPropertyByResourceType(ResourceType type) {
         return null;
+    }
+
+    @Override
+    public JTable getPropertyWithResourceID(int id) {
+        return null;
+    }
+
+    @Override
+    public int getCurrentAgentID() {
+        switch (manager.getCurrentMode()) {
+            case ADMIN:
+                return 0;
+            case AGENT:
+                try {
+                    return Integer.parseInt(currUID);
+                } catch (NumberFormatException e) {
+                    // should not happen! All logged in agent must have an integer uid by our login process.
+                    return -1;
+                }
+            default:
+                return -1;
+        }
     }
 
 

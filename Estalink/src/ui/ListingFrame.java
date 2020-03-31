@@ -10,14 +10,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import java.lang.reflect.Array;
-import java.util.concurrent.Flow;
 
 public class ListingFrame extends JFrame implements ActionListener {
     private EstateUI parent;
     private AccountMode mode;
     private ListingTransactionHandler handler;
-    private JTable listingResult, propertyResult;
     private JPanel listingPanel, propertyPanel;
     private JComboBox<String> listingType, propertyType;
     private JTextField idField, priceField, addressField;
@@ -59,20 +56,20 @@ public class ListingFrame extends JFrame implements ActionListener {
         setupListingSearch();
         setupPropertySearch();
         c.fill = GridBagConstraints.NONE;
-        c.gridy = 1;
+        c.gridy = 2;
         c.gridx = 0;
         c.weighty = 0.5;
         gb.setConstraints(listingPanel, c);
         gb.setConstraints(propertyPanel, c);
 
-        c.gridy = 2;
+        c.gridy = 3;
         c.weighty = 0.1;
         JButton submit = new JButton("Submit");
         submit.addActionListener(this);
         gb.setConstraints(submit, c);
 
         leftHolder = new JScrollPane();
-        c.gridy = 3;
+        c.gridy = 4;
         c.gridx = 0;
         gb.setConstraints(leftHolder, c);
 
@@ -111,14 +108,14 @@ public class ListingFrame extends JFrame implements ActionListener {
                 parent.switchFrame(EstateUI.states.Menu.name());
                 break;
             case "Submit" :
-                // TODO
+                // TODO USE HANDLER TO PERFORM SEARCH!
                 // Obtain result here
                 JTable result = null; // stub
                 result.addMouseMotionListener(new MouseMotionListener() {
                     int hoveredRow = -1, hoveredColumn = -1;
                     @Override
                     public void mouseMoved(MouseEvent e) {
-                        // also need to test if different..
+                        // Use functions in this.handler to do lookup
                         Point p = e.getPoint();
                         hoveredRow = result.rowAtPoint(p);
                         hoveredColumn = result.columnAtPoint(p);
@@ -141,11 +138,13 @@ public class ListingFrame extends JFrame implements ActionListener {
     }
 
     private void reverseLookup(String key) {
-        // TODO
-        // Implement this
+        // TODO DO REVERSE LOOKUP ON LEFTPANEL
+        // If type is listing, then lookup property with the listing_id.
+        // If type is property, then lookup listing with the property address.
         if (!key.equals(currkey)) {
             if (isListing) {
                 currkey = key;
+                // Use functions in this.handler to do lookup
                 JTable result = null; //stub
                 rightHolder.getViewport().removeAll();
                 rightHolder.getViewport().add(result);
@@ -155,7 +154,7 @@ public class ListingFrame extends JFrame implements ActionListener {
         }
     }
 
-    private void changeMode(boolean isListing){
+    private void changeMode(boolean isListing) {
         this.isListing = isListing;
         this.changeMode.setText(isListing? "Search Properties": "Search Listings");
         listingPanel.setVisible(isListing);
@@ -214,7 +213,7 @@ public class ListingFrame extends JFrame implements ActionListener {
         listingPanel.add(listingType, c);
     }
 
-    public void setupPropertySearch(){
+    private void setupPropertySearch(){
         propertyPanel = new JPanel();
         propertyPanel.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -223,7 +222,7 @@ public class ListingFrame extends JFrame implements ActionListener {
         c.gridx = 0;
         c.insets = new Insets(0, 0, 0, 12);
         c.anchor = GridBagConstraints.WEST;
-        JLabel idPrompt = new JLabel("Address");
+        JLabel idPrompt = new JLabel("Address: ");
         propertyPanel.add(idPrompt, c);
 
         c.gridx = 1;

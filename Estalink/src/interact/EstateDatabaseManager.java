@@ -39,20 +39,21 @@ public class EstateDatabaseManager {
 
     private EstateDatabaseManager(){
         // establish database connection
-        InitializeConnection();
         // start from admin mode
         this.mode = AccountMode.ADMIN;
     }
 
-    private void InitializeConnection(){
+    public boolean InitializeConnection(String uid, String pwd){
         System.out.println("Establishing connection");
         try {
             DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-            connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1522:stu","ora_shumalll", "a28309169");
-            System.out.println("Connected to jdbc:oracle:thin:@localhost:1522:stu, ora_shumalll");
+            connection = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1522:stu",uid, pwd);
+            System.out.println("Connected to jdbc:oracle:thin:@localhost:1522:stu, " + uid);
+            return true;
         } catch (Exception e) {
-            // silently ignore (for now)
+            // login failed
             System.out.println(e);
+            return false;
         }
     }
 
