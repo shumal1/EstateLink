@@ -1,5 +1,6 @@
 package model;
 
+import types.BusType;
 import types.HospitalType;
 import types.ResourceType;
 
