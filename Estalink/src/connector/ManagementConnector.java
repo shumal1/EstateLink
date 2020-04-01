@@ -78,7 +78,6 @@ public class ManagementConnector extends Connector {
 
             ResultSet resultSet = ps.executeQuery();
 
-            ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
             int totalRowCount = 0;
             if(resultSet.last()) {
                 totalRowCount = resultSet.getRow();

@@ -1,6 +1,5 @@
-package interact;
-
 import handler.AuthenticationHandler;
+import interact.EstateTransactionHandler;
 import types.AccountMode;
 import ui.EstateAuthenticator;
 import ui.EstateUI;
@@ -10,6 +9,7 @@ public class EstateLink implements AuthenticationHandler {
     private EstateTransactionHandler transactionHandler;
     private EstateAuthenticator au;
     private EstateUI ui;
+    private AccountMode mode;
     public static void main(String[] args){
         // Performs logon and stuff
             // Change mode and get a new event handler upon changing account type.
@@ -34,21 +34,23 @@ public class EstateLink implements AuthenticationHandler {
         au.authenticate();
     }
 
-    public void HandleLogin(AccountMode mode, String uid, String pwd) {
-        authenticated = transactionHandler.changeMode(mode, uid, pwd);
-        au.displayResult(authenticated);
-        if (authenticated) {
-            // show main menu
-            au.dispose();
-            interact(uid);
-        } else {
-            // login failed, try again
+    public boolean HandleLogin(AccountMode mode, String uid, String pwd, String db_uid, String db_pwd) {
+        if (transactionHandler.dbLogon(db_uid, db_pwd)) {
+            authenticated = transactionHandler.changeMode(mode, uid, pwd);
+            if (authenticated) {
+                // show main menu
+                this.mode = mode;
+                au.dispose();
+                interact();
+                return true;
+            }
         }
+        return false;
     }
 
-    public void interact(String uid){
+    public void interact(){
         // handler.getCurrentMode()
-        ui = new EstateUI(transactionHandler, AccountMode.ADMIN , uid);
+        ui = new EstateUI(transactionHandler, mode);
         ui.showUI();
     }
 }

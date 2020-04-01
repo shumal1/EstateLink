@@ -206,4 +206,24 @@ public class ListingConnector extends Connector{
 
     }
 
+    //Helper Method requested by Jason
+    public int getNextListingID() {
+        Connection connection = this.manager.getConnection();
+        try {
+            System.out.println("Executing SELECT MAX(listing_id) FROM Listings");
+            PreparedStatement ps = connection.prepareStatement("SELECT MAX(listing_id) FROM Listings");
+
+            ResultSet resultSet = ps.executeQuery();
+            if (resultSet.next()) {
+                int maxID = resultSet.getInt(1);
+                ps.close();
+                return maxID;
+            }
+            lasterr = "max listingID not found";
+            return -1;
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return -1;
+        }
+    }
 }

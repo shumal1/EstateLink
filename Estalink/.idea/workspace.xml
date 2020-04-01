@@ -2,17 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0fda6d56-ebda-4562-af8b-b3ecb29ef6d0" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/interact/EstateLink.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/connector/AgentConnector.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/connector/AgentConnector.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interact/EstateEventHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/interact/EstateTransactionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interact/EstateLinkGUI.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/AgencyModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/AgencyModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/AgentModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/AgentModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/ListingModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/ListingModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/PropertyModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/PropertyModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/model/ResourceModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/model/ResourceModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types/AccountMode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/types/AccountMode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/EstateLink.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/EstateLink.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/handler/AuthenticationHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/handler/AuthenticationHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/handler/ListingTransactionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/handler/ListingTransactionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/handler/ResourceTransactionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/handler/ResourceTransactionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/handler/TransactionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/handler/TransactionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/interact/EstateDatabaseManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/interact/EstateDatabaseManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/interact/EstateTransactionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/interact/EstateTransactionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/EstateAuthenticator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/EstateAuthenticator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/EstateUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/EstateUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/ListingFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/ListingFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ui/ResourceFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/ResourceFrame.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +52,7 @@
       <option name="ALTERNATIVE_JRE_PATH" value="11" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="INCLUDE_PROVIDED_SCOPE" value="true" />
-      <option name="MAIN_CLASS_NAME" value="interact.EstateLink" />
+      <option name="MAIN_CLASS_NAME" value="EstateLink" />
       <module name="Estalink" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -68,7 +69,7 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.EstateLinkGUI" />
+        <item itemvalue="Application.EstateLink" />
       </list>
     </recent_temporary>
   </component>
@@ -102,58 +103,62 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585442316453" />
-    <state x="765" y="222" key="#com.intellij.ide.util.MemberChooser" timestamp="1585467104279">
+    <state x="765" y="222" key="#com.intellij.ide.util.MemberChooser" timestamp="1585614242495">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="222" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1585467104279" />
+    <state x="765" y="222" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1585614242495" />
     <state x="689" y="305" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1585442149264">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="689" y="305" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585442149264" />
-    <state x="518" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1584344492378">
+    <state x="518" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1585534464393">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="518" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584344492378" />
-    <state width="402" height="466" key="DebuggerActiveHint" timestamp="1585466699622">
+    <state x="518" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585534464393" />
+    <state x="581" y="115" key="CommitChangelistDialog2" timestamp="1585549169752">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="402" height="466" key="DebuggerActiveHint/0.0.1920.1040@0.0.1920.1040" timestamp="1585466699622" />
+    <state x="581" y="115" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1585549169752" />
+    <state width="412" height="466" key="DebuggerActiveHint" timestamp="1585524097036">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="412" height="466" key="DebuggerActiveHint/0.0.1920.1040@0.0.1920.1040" timestamp="1585524097036" />
     <state x="740" y="276" key="FileChooserDialogImpl" timestamp="1584254312414">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="276" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1584254312414" />
-    <state width="1877" height="194" key="GridCell.Tab.0.bottom" timestamp="1585467041520">
+    <state width="1877" height="283" key="GridCell.Tab.0.bottom" timestamp="1585615484769">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="194" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1585467041520" />
-    <state width="1877" height="194" key="GridCell.Tab.0.center" timestamp="1585467041520">
+    <state width="1877" height="283" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1585615484769" />
+    <state width="1877" height="283" key="GridCell.Tab.0.center" timestamp="1585615484769">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="194" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1585467041520" />
-    <state width="1877" height="194" key="GridCell.Tab.0.left" timestamp="1585467041520">
+    <state width="1877" height="283" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1585615484769" />
+    <state width="1877" height="283" key="GridCell.Tab.0.left" timestamp="1585615484769">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="194" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1585467041520" />
-    <state width="1877" height="194" key="GridCell.Tab.0.right" timestamp="1585467041520">
+    <state width="1877" height="283" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1585615484769" />
+    <state width="1877" height="283" key="GridCell.Tab.0.right" timestamp="1585615484769">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="194" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1585467041520" />
-    <state width="1877" height="255" key="GridCell.Tab.1.bottom" timestamp="1585466838828">
+    <state width="1877" height="283" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1585615484769" />
+    <state width="1877" height="283" key="GridCell.Tab.1.bottom" timestamp="1585615484769">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="255" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1585466838828" />
-    <state width="1877" height="255" key="GridCell.Tab.1.center" timestamp="1585466838828">
+    <state width="1877" height="283" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1585615484769" />
+    <state width="1877" height="283" key="GridCell.Tab.1.center" timestamp="1585615484769">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="255" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1585466838828" />
-    <state width="1877" height="255" key="GridCell.Tab.1.left" timestamp="1585466838828">
+    <state width="1877" height="283" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1585615484769" />
+    <state width="1877" height="283" key="GridCell.Tab.1.left" timestamp="1585615484769">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="255" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1585466838828" />
-    <state width="1877" height="255" key="GridCell.Tab.1.right" timestamp="1585466838828">
+    <state width="1877" height="283" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1585615484769" />
+    <state width="1877" height="283" key="GridCell.Tab.1.right" timestamp="1585615484769">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="255" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1585466838828" />
+    <state width="1877" height="283" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1585615484769" />
     <state x="461" y="163" width="1040" height="848" key="SettingsEditor" timestamp="1585442668333">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -168,21 +173,56 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/src/connector/ListingConnector.java</url>
-          <line>36</line>
+          <line>41</line>
           <properties class="connector.ListingConnector" method="deleteListing">
             <option name="EMULATED" value="true" />
           </properties>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/connector/AgentConnector.java</url>
-          <line>97</line>
-          <option name="timeStamp" value="5" />
+          <url>file://$PROJECT_DIR$/src/interact/EstateTransactionHandler.java</url>
+          <line>78</line>
+          <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/interact/EstateTransactionHandler.java</url>
-          <line>77</line>
-          <option name="timeStamp" value="10" />
+          <line>72</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/connector/AgentConnector.java</url>
+          <line>113</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/connector/AgentConnector.java</url>
+          <line>30</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/interact/EstateDatabaseManager.java</url>
+          <line>69</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/ui/AgentFrame.java</url>
+          <line>95</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/EstateLink.java</url>
+          <line>52</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/EstateLink.java</url>
+          <line>39</line>
+          <option name="timeStamp" value="27" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/EstateLink.java</url>
+          <line>37</line>
+          <option name="timeStamp" value="28" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
