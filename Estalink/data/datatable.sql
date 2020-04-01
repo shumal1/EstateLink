@@ -10,28 +10,25 @@ DROP TABLE property_in_community;
 DROP TABLE has_property_and_resources;
 
 
+CREATE TABLE agency
+	(agency_name VARCHAR(255),
+	agency_address VARCHAR(500),
+	agency_description VARCHAR(500),
+	agency_rating DOUBLE precision,
+	PRIMARY KEY (agency_name)
+	);
+ grant select on agency to public;
+
 CREATE TABLE agency_employee
 	(agent_id INT,
 	agent_name VARCHAR(255),
 	agency_name VARCHAR(255),
 	agent_phone_number VARCHAR(255),
 	PRIMARY KEY (agent_id),
-	FOREIGN KEY (agency_name) REFERENCES agency 
-		ON DELETE CASCADE 
-		ON UPDATE CASCADE
+	FOREIGN KEY (agency_name) REFERENCES agency(agency_name)
+		ON DELETE CASCADE
 	);
-grant select on agency_employee to public;
- 
-
-CREATE TABLE agency
-	(agency_name VARCHAR(255),
-	agency_address VARCHAR(255),
-	agency_description VARCHAR(255),
-	agency_rating DOUBLE,
-	PRIMARY KEY (agency_name)
-	);
-grant select on agency_employee to public;
- 
+ grant agency_employee to public;
 
 CREATE TABLE listing
 	( listing_id INT,
@@ -40,9 +37,8 @@ CREATE TABLE listing
 	agent_id INT,
 	listing_type VARCHAR(10),
 	PRIMARY KEY (listing_id),
-	FOREIGN KEY (agent_id) REFERENCES agency_employee
+	FOREIGN KEY (agent_id) REFERENCES agency_employee(agent_id)
 		ON DELETE CASCADE
-		ON UPDATE CASCADE
 	);
 grant select on listing to public;
 
@@ -61,13 +57,12 @@ CREATE TABLE property
 	property_type VARCHAR(20),
 	dimension VARCHAR(255),
 	postal_code VARCHAR(20),
-	is_duplex BOOL,
+	is_duplex INT,
 	apartment_number INT,
 	capacity INT,
-	PRIMARY KEY (property_address, listing_id),
-	FOREIGN KEY (listing_id) REFERENCES listing
+	PRIMARY KEY (property_address),
+	FOREIGN KEY (listing_id) REFERENCES listing (listing_id)
 		ON DELETE SET NULL 
-		ON UPDATE CASCADE
 	);
 grant select on property to public;
 
@@ -86,9 +81,8 @@ CREATE TABLE property_management
 	(agency_name VARCHAR(255),
 	property_address VARCHAR(255),
 	FOREIGN KEY (agency_name) REFERENCES agency,
-	FOREIGN KEY (property_address) REFERENCES property
+	FOREIGN KEY (property_address) REFERENCES property(property_address)
 		ON DELETE CASCADE
-		ON UPDATE CASCADE
 	);
 grant select on property_management to public;
 
@@ -96,9 +90,10 @@ CREATE TABLE neighbour
 	(building_address VARCHAR(255),
 	neighbour_address VARCHAR(255),
 	PRIMARY KEY (building_address, neighbour_address),
-	FOREIGN KEY (building_address, neighbour_address) REFERENCES property
+	FOREIGN KEY (building_address) REFERENCES property(property_address)
+		ON DELETE CASCADE,
+	FOREIGN KEY (neighbour_address) REFERENCES property(property_address)
 		ON DELETE CASCADE
-		ON UPDATE RESTRICT
 	);
 grant select on neighbour to public;
 
@@ -108,41 +103,20 @@ CREATE TABLE property_in_community
 	community_city VARCHAR(255),
 	PRIMARY KEY(property_address, community_name, community_city),
 	FOREIGN KEY(property_address) REFERENCES property
-		ON DELETE CASCADE
-		ON UPDATE RESTRICT,
-	FOREIGN KEY(community_name, community_city) REFERENCES community
+		ON DELETE CASCADE,
+	FOREIGN KEY(community_name, community_city) REFERENCES community (community_name, community_city)
 	);
 grant select on property_in_community to public;
 
 CREATE TABLE has_property_and_resources
 	(resource_id INT,
-	property_address VARCHAR(255),
-	PRIMARY KEY (resource_id, property_id),
-	FOREIGN KEY (resource_id) REFERENCES public_resources,
-	FOREIGN KEY (property_address) REFERENCES property
-		ON DELETE CASCADE
-		ON UPDATE CASCADE
+	listing_id INT,
+	PRIMARY KEY (resource_id, listing_id),
+	FOREIGN KEY (resource_id) REFERENCES public_resources(resource_id)
+		ON DELETE CASCADE,
+	FOREIGN KEY (listing_id) REFERENCES listing(listing_id)	
 	);
 grant select on has_property_and_resources to public;
-
-
- 
-
-INSERT INTO agency_employee
-VALUES(7, 'James Bond', 'Realtor', 0070070007);
- 
-INSERT INTO agency_employee
-VALUES(1, 'Thomas Lin', 'NuStream', 6041234567);
-
-INSERT INTO agency_employee
-VALUES(2, 'Catherine Due', 'Realex', 7781234567);
-
-INSERT INTO agency_employee
-VALUES(3, 'Judy Xu', 'BuildAWall', 6049251835);
-
-INSERT INTO agency_employee
-VALUES(4, 'Ben liu', 'GreatAgain', 6042258275);
-
 
 
 INSERT INTO agency
@@ -158,9 +132,23 @@ INSERT INTO agency
 VALUES('BuildAWall', '3308 W Broadway, Vancouver', 'Looking to buy or sell a home? We have got you covered! Check out our property listings and find an experienced RE/MAX agent in your market.', 2.1);
 
 INSERT INTO agency
-VALUES('GreatAgain', '2095 W 41st Ave, Vancouver', 'Operating since 1978, The GreatAgain Real Estate Company Ltd is the number one real estate company in Vancouver.' , 4.8);
+VALUES('GreatAgain', '2095 W 41st Ave, Vancouver', 'Operating since 1978, The GreatAgain Real Estate Company Ltd is the number one real estate company in Vancouver.', 4.8);
 
 
+INSERT INTO agency_employee
+VALUES(7, 'James Bond', 'Realtor', 0070070007);
+ 
+INSERT INTO agency_employee
+VALUES(1, 'Thomas Lin', 'NuStream', 6041234567);
+
+INSERT INTO agency_employee
+VALUES(2, 'Catherine Due', 'Realex', 7781234567);
+
+INSERT INTO agency_employee
+VALUES(3, 'Judy Xu', 'BuildAWall', 6049251835);
+
+INSERT INTO agency_employee
+VALUES(4, 'Ben liu', 'GreatAgain', 6042258275);
 
 INSERT INTO listing
 VALUES(1, 400000, 3500000, 1, 'SELL');
@@ -196,29 +184,26 @@ INSERT INTO community
 VALUES('Downtown', 45000, 'Vancouver');
 
 INSERT INTO property
-VALUES('5025 Yew Street, Vancouver', 1, 'Apartment', '1477 ft', 'V6S 1W7',false,205, null);
+VALUES('5025 Yew Street, Vancouver', 1, 'Apartment', '1477 ft', 'V6S 1W7',0,205, null);
 
 INSERT INTO property
-VALUES('6218 King Edward, Vancouver', 2, 'Office', '10000 ft', 'V3M 3M3',false,null, 8);
+VALUES('6218 King Edward, Vancouver', 2, 'Office', '10000 ft', 'V3M 3M3',0,null, 8);
 
 INSERT INTO property
-VALUES('5020 Yew Street, Vancouver', 3, 'Apartment', '980 ft', 'V6M 1S1',false,101, null);
+VALUES('5020 Yew Street, Vancouver', 3, 'Apartment', '980 ft', 'V6M 1S1',0,101, null);
 
 INSERT INTO property
-VALUES('2118 Great Lake Way, Vancouver', 4, 'Office', '9700 ft', 'V3S 1Q7',false,null, 12);
+VALUES('2118 Great Lake Way, Vancouver', 4, 'Office', '9700 ft', 'V3S 1Q7',0,null, 12);
 
 INSERT INTO property
-VALUES('4040 Howe Street, Vancouver', 5, 'House', '3652 ft', 'V2S 1S3',false,null, null);
+VALUES('4040 Howe Street, Vancouver', 5, 'House', '3652 ft', 'V2S 1S3',0,null, null);
 
 INSERT INTO property
-VALUES('1250 Maple Street, Vancouver', 6, 'Apartment', '2500 ft', 'V6M 1L8',true,333, null);
-
+VALUES('1250 Maple Street, Vancouver', 6, 'Apartment', '2500 ft', 'V6M 1L8',1,333, null);
 
 
 INSERT INTO neighbour
 VALUES ('5025 Yew Street, Vancouver', '5020 Yew Street, Vancouver');
-
-
 
 INSERT INTO public_resources
 VALUES (1, 'R4');
@@ -255,31 +240,31 @@ VALUES ('5025 Yew Street, Vancouver', 'Kerrisdale', 'Vancouver');
 
 
 INSERT INTO has_property_and_resources
-VALUES (1, '5025 Yew Street, Vancouver');
+VALUES (1, 1);
 
 INSERT INTO has_property_and_resources
-VALUES (1, '6218 King Edward, Vancouver');
+VALUES (1, 2);
 
 INSERT INTO has_property_and_resources
-VALUES (1, '1250 Maple Street, Vancouver');
+VALUES (1, 6);
 
 INSERT INTO has_property_and_resources
-VALUES (3, '5025 Yew Street, Vancouver');
+VALUES (3, 1);
 
 INSERT INTO has_property_and_resources
-VALUES (2, '2118 Great Lake Way, Vancouver');
+VALUES (2, 4);
 
 INSERT INTO has_property_and_resources
-VALUES (3, '4040 Howe Street, Vancouver');
+VALUES (3, 5);
 
 INSERT INTO has_property_and_resources
-VALUES (4, '1250 Maple Street, Vancouver');
+VALUES (4, 6);
 
 INSERT INTO has_property_and_resources
-VALUES (5, '5025 Yew Street, Vancouver');
+VALUES (5, 1);
 
 INSERT INTO has_property_and_resources
-VALUES (5, '5020 Yew Street, Vancouver');
+VALUES (5, 3);
 
 INSERT INTO has_property_and_resources
-VALUES (5, '1250 Maple Street, Vacouver');
+VALUES (5, 6);
