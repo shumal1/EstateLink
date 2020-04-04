@@ -75,7 +75,6 @@ public class PropertyConnector extends Connector {
     }
 
     public boolean UpdatePropertyInfo(PropertyModel propertyModel) {
-        // TODO: Implement this
         // select old property by address and listing id, and do update.
         if (!checkMode(AccountMode.AGENT)) {
             return false;
@@ -107,7 +106,6 @@ public class PropertyConnector extends Connector {
     }
 
     public boolean DeleteProperty(String address) {
-        // TODO: Implement this
         // get address, and execute update instead of insert
         if (!checkMode(AccountMode.AGENT)) {
             return false;

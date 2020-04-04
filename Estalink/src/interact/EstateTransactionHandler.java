@@ -16,9 +16,9 @@ import java.util.Collections;
 
 public class EstateTransactionHandler implements AgentTransactionHandler, ListingTransactionHandler, ResourceTransactionHandler {
     private static EstateDatabaseManager manager = EstateDatabaseManager.getInstance();
-    private int nextListingID;
+    private static int nextListingID;
     private int nextAgentID;
-    private String currUID;
+    private static String currUID;
 
     private static final String SUCCESS_RESPONSE  = "SQL_SUCCESS, requested update completed";
 
@@ -49,7 +49,7 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
         return manager.getCurrentMode();
     }
 
-    public int getNextListingID(){
+    public static int getNextListingID(){
         return nextListingID++;
     }
 
@@ -147,8 +147,8 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
         return null;
     }
 
-    @Override
-    public int getCurrentAgentID() {
+
+    public static int getCurrentAgentID() {
         switch (manager.getCurrentMode()) {
             case ADMIN:
                 return 0;
