@@ -50,6 +50,7 @@ public class ResourcesConnector extends Connector{
             ResultSet resultSet = ps.executeQuery();
 
             int i = 0;
+
             while (resultSet.next()) {
                 resourceModels[i] = getResourceModel(ps, resultSet);
                 i++;

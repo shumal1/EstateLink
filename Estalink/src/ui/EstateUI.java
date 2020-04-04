@@ -35,8 +35,8 @@ public class EstateUI extends JFrame implements ActionListener {
 
 
         // center the frame
-        Dimension d = this.getToolkit().getScreenSize();
-        Rectangle r = this.getBounds();
+        Dimension d = mainFrame.getToolkit().getScreenSize();
+        Rectangle r = mainFrame.getBounds();
         mainFrame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
         mainFrame.add(mainMenu);
         // make the window visible
@@ -59,11 +59,13 @@ public class EstateUI extends JFrame implements ActionListener {
             Icon listingIcon = new ImageIcon("resources/home.png");
             Icon resourceIcon = new ImageIcon("resources/park.png");
             Icon agentIcon = new ImageIcon("resources/agent.png");
+
             updateView.setIcon(updateIcon);
             listingView.setIcon(listingIcon);
             resourceView.setIcon(resourceIcon);
             agentView.setIcon(agentIcon);
         } catch (Exception e) {
+            System.out.println(e.getMessage() + " I AM HERE");
             // silently ignore, don't add icon
         }
 

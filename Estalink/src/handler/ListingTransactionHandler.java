@@ -23,7 +23,7 @@ public interface ListingTransactionHandler extends TransactionHandler {
                                  String property_postalCode, boolean isDuplex, String property_apartmentNumber, int capacity,
                                  int listing_id, int listing_price, ListingType listing_type, int agent_id);
     String updateListing(int listing_id, int new_price);
-    boolean deleteListing(int listing_id);
+    String deleteListing(int listing_id);
 
     // note that this one should use LIKE %address% to perform match, so empty string is treated as wildcard
     JTable getListingByCondition(int id, int price, boolean higher, ListingType type);

@@ -2,6 +2,7 @@ package connector;
 
 import model.AgencyModel;
 import model.PropertyModel;
+import model.ResourceModel;
 import types.AccountMode;
 import types.PropertyType;
 
@@ -198,6 +199,33 @@ public class PropertyConnector extends Connector {
         }
     }
 
+    public PropertyModel[] selectPropertyByResource(ResourceModel resourceModel) {
+        Connection connection = this.manager.getConnection();
+
+        try {
+            System.out.println("Executing SELECT listing_id FROM has_property_and_resources WHERE resource_id = " + resourceModel.getResource_ID());
+            PreparedStatement ps = connection.prepareStatement("SELECT listing_id FROM has_property_and_resources WHERE resource_id = ?");
+            ps.setString(1, Integer.toString(resourceModel.getResource_ID()));
+            ResultSet resultSet = ps.executeQuery();
+            int totalRowCount = 0;
+
+            if(resultSet.last()) {
+                totalRowCount = resultSet.getRow();
+                resultSet.beforeFirst();
+            }
+            PropertyModel[] propertyModels = new PropertyModel[totalRowCount];
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                propertyModels[resultSet.getRow()] = selectPropertybyListingID(id);
+            }
+
+            return propertyModels;
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
+        }
+    }
+
     public PropertyModel[] selectPropertyByCommunity(String community_name, String community_city) {
         Connection connection = this.manager.getConnection();
         try {
@@ -341,6 +369,41 @@ public class PropertyConnector extends Connector {
         } catch (SQLException e) {
             lasterr = e.getMessage();
             return false;
+        }
+    }
+
+    private PropertyModel selectPropertybyListingID(int id) {
+        Connection connection = this.manager.getConnection();
+        try {
+            System.out.println("Executing SELECT * FROM property WHERE listing_id = " + id);
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM property WHERE listing_id = (?)");
+            ps.setString(1, Integer.toString(id));
+
+            ResultSet resultSet = ps.executeQuery();
+            if (resultSet.next()) {
+                String property_address = resultSet.getString(1);
+                int listing_id = resultSet.getInt(2);
+                PropertyType property_type = PropertyType.valueOf(resultSet.getString(3));
+                String dimension = resultSet.getString(4);
+                String postal_code = resultSet.getString(5);
+                boolean is_duplex = false;
+                if(resultSet.getInt(6) == 1) {
+                    is_duplex = true;
+                }
+
+                int apartment_number = resultSet.getInt(7);
+                int capacity = resultSet.getInt(8);
+
+                ps.close();
+                PropertyModel propertyModel = new PropertyModel(property_address, dimension, postal_code, listing_id, is_duplex,
+                        apartment_number, capacity, property_type);
+                return propertyModel;
+            }
+            lasterr = "There is no property with this property address";
+            return null;
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
         }
     }
 }
