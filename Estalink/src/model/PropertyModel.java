@@ -2,7 +2,7 @@ package model;
 
 import types.PropertyType;
 
-public class PropertyModel {
+public class PropertyModel implements Model {
     private String property_address;
     private String property_dimension;
     private String property_postalCode;

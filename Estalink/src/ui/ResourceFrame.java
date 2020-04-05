@@ -125,10 +125,6 @@ public class ResourceFrame extends JFrame implements ActionListener {
                 } else {
                     result = handler.getResourceByType(type);
                 }
-                leftholder = new JScrollPane(result);
-                leftholder.setBounds(10, 150, 200, 100);
-                this.add(leftholder);
-                this.repaint();
                 leftholder.getViewport().removeAll();
                 leftholder.getViewport().add(result);
                 leftholder.repaint();
@@ -161,18 +157,17 @@ public class ResourceFrame extends JFrame implements ActionListener {
         // Implement this
         if (!key.equals(currkey)) {
             currkey = key;
-            this.remove(rightholder);
             JTable result = new JTable();
             if (isProperty){
+                result = this.handler.getResourceByProperty(key);
+            } else {
                 int id = Integer.parseInt(key);
                 result = this.handler.getPropertyWithResourceID(id);
-            } else {
-                result = this.handler.getResourceByProperty(key);
             }
-            rightholder = new JScrollPane(result);
-            rightholder.setBounds(220, 150, 150, 100);
-            this.add(rightholder);
-            this.repaint();
+            rightholder.getViewport().removeAll();
+            rightholder.getViewport().add(result);
+            rightholder.repaint();
+            this.pack();
             // If searching property, then on right panel display all resources that the property has
             // If searching resource, then on right panel display all property that have this resource
             // Use functions in this.handler to do lookup
