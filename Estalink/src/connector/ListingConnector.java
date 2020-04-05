@@ -1,13 +1,17 @@
 package connector;
 
 import model.ListingModel;
+import model.PropertyModel;
 import types.AccountMode;
 import types.ListingType;
+import types.PropertyType;
 
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class ListingConnector extends Connector{
     // Insert, update, delete on Listing
@@ -114,6 +118,33 @@ public class ListingConnector extends Connector{
         }
     }
 
+    public ListingModel getListingByID(int id){
+        Connection connection = this.manager.getConnection();
+        try {
+            System.out.println("Executing SELECT * FROM listing WHERE listing_id = " + id);
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM listing WHERE listing_id = (?)");
+            ps.setInt(1, id);
+
+            ResultSet resultSet = ps.executeQuery();
+            if (resultSet.next()) {
+                int listing_id = resultSet.getInt(1);
+                int listing_price = resultSet.getInt(2);
+                int listing_histprice = resultSet.getInt(3);
+                int agent_id = resultSet.getInt(4);
+                ListingType type = ListingType.valueOf(resultSet.getString(5));
+
+                ps.close();
+                ListingModel listingModel = new ListingModel(listing_id, listing_price, listing_histprice, agent_id, type);
+                return listingModel;
+            }
+            lasterr = "There is no listing with this id";
+            return null;
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
+        }
+    }
+
     public ListingModel[] getListingsByType(ListingType listingType) {
         Connection connection = this.manager.getConnection();
         try {
@@ -138,7 +169,6 @@ public class ListingConnector extends Connector{
             lasterr = e.getMessage();
             return null;
         }
-
     }
 
     public ListingModel[] getListingByPrice(ListingType type, int price) {
@@ -187,6 +217,46 @@ public class ListingConnector extends Connector{
             }
             return listingModels;
 
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
+        }
+    }
+
+    public ListingModel[] selectListingByCondition(int id, int price, boolean higher, ListingType type) {
+        Connection connection = this.manager.getConnection();
+        try {
+            System.out.println("Executing SELECT property_address FROM property WHERE property_type = " + type);
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM listing WHERE listing_id = ? AND listing_price ? ? AND listing_type = ?");
+            ps.setString(1, Integer.toString(id));
+            if(higher) {
+                ps.setString(2, ">");
+            } else {
+                ps.setString(2, "<");
+            }
+            ps.setString(3, Integer.toString(price));
+            ps.setString(4, type.toString());
+
+            ResultSet resultSet = ps.executeQuery();
+            int totalRowCount = 0;
+            if(resultSet.last()) {
+                totalRowCount = resultSet.getRow();
+                resultSet.beforeFirst();
+            }
+
+            ListingModel[] listingModels = new ListingModel[totalRowCount];
+            while (resultSet.next()) {
+                int listing_id = resultSet.getInt(1);
+                int listing_price = resultSet.getInt(2);
+                int listing_histprice = resultSet.getInt(3);
+                int agentID = resultSet.getInt(4);
+                ListingType listing_type = ListingType.valueOf(resultSet.getString(5));
+
+                ListingModel listingModel = new ListingModel(listing_id, listing_price, listing_histprice, agentID, listing_type);
+                listingModels[resultSet.getRow()] = listingModel;
+            }
+            ps.close();
+            return listingModels;
         } catch (SQLException e) {
             lasterr = e.getMessage();
             return null;

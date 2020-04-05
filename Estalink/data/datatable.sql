@@ -1,13 +1,18 @@
-DROP TABLE agency_employee;
-DROP TABLE agency;
-DROP TABLE listing;
-DROP TABLE community;
+DROP TABLE has_property_and_resources;
+DROP TABLE property_in_community;
+DROP TABLE neighbour;
+DROP TABLE property_management;
 DROP TABLE property;
 DROP TABLE public_resources;
-DROP TABLE property_management;
-DROP TABLE neighbour;
-DROP TABLE property_in_community;
-DROP TABLE has_property_and_resources;
+DROP TABLE listing;
+DROP TABLE community;
+DROP TABLE agency_employee;
+DROP TABLE agency;
+
+
+
+
+
 
 
 CREATE TABLE agency
@@ -28,7 +33,7 @@ CREATE TABLE agency_employee
 	FOREIGN KEY (agency_name) REFERENCES agency(agency_name)
 		ON DELETE CASCADE
 	);
- grant agency_employee to public;
+ grant select on agency_employee to public;
 
 CREATE TABLE listing
 	( listing_id INT,
@@ -206,19 +211,19 @@ INSERT INTO neighbour
 VALUES ('5025 Yew Street, Vancouver', '5020 Yew Street, Vancouver');
 
 INSERT INTO public_resources
-VALUES (1, 'R4');
+VALUES (1, 'R4', 1, 3, null, 0);
 
 INSERT INTO public_resources
-VALUES (2, 'Deer Lake Park');
+VALUES (2, 'Deer Lake Park', 2, 0, 'Welcome to Deer Lake Park', 0);
 
 INSERT INTO public_resources
-VALUES (3, 'Canada Line');
+VALUES (3, 'Canada Line', 4, 0, null, 0);
 
 INSERT INTO public_resources
-VALUES (4, 'Vancouver General Hospital');
+VALUES (4, 'Vancouver General Hospital', 3, 0, null, 2);
 
 INSERT INTO public_resources
-VALUES (5, 'Arbutus Greenway', );
+VALUES (5, 'Arbutus Greenway', 5, 0, null, 0);
 
 INSERT INTO property_in_community
 VALUES ('6218 King Edward, Vancouver', 'Wellingdon', 'Burnaby');

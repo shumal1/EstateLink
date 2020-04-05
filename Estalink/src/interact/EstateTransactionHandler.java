@@ -102,49 +102,102 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
 
     }
 
-    // TODO Implement methods here for usage in UI, feel free to update if needed.
+    // note that admin has an agent id of 0.
+    // in ui, call getCurrentAgentID() to get the id.
     @Override
     public String insertPropertyListing(String property_address, PropertyType property_type, String property_dimension,
                                  String property_postalCode, boolean isDuplex, String property_apartmentNumber, int capacity,
                                  int listing_id, int listing_price, ListingType listing_type, int agent_id) {
-        // note that admin has an agent id of 0.
-        // in ui, call getCurrentAgentID() to get the id.
-        return null;
+        PropertyModel propertyModel = new PropertyModel(property_address, property_dimension, property_postalCode, listing_id
+        , isDuplex, Integer.parseInt(property_apartmentNumber), capacity, property_type);
+
+        ListingModel listingModel = new ListingModel(listing_id, listing_price,0, agent_id, listing_type);
+        if (manager.getPropertyConnector().InsertProperty(propertyModel) && manager.getListingConnector().InsertListing(listingModel)) {
+            return SUCCESS_RESPONSE;
+        }
+        return manager.getListingConnector().getLastError() + " and " + manager.getPropertyConnector();
     }
 
     @Override
     public String updateListing(int listing_id, int new_price) {
-        return null;
+        if(manager.getListingConnector().UpdateListingPrice(listing_id, new_price)) {
+            return SUCCESS_RESPONSE;
+        }
+        return manager.getListingConnector().getLastError();
     }
 
     @Override
-    public boolean deleteListing(int listing_id) {
-        return false;
+    public String deleteListing(int listing_id) {
+        if(manager.getListingConnector().deleteListing(listing_id)) {
+            return SUCCESS_RESPONSE;
+        }
+        return manager.getListingConnector().getLastError();
     }
 
     @Override
     public JTable getListingByCondition(int id, int price, boolean higher, ListingType type) {
-        return null;
+        Model[] list;
+        try {
+            ListingModel[] listingModels = manager.getListingConnector().selectListingByCondition(id, price, higher, type);
+            list = (Model[]) listingModels;
+        } catch (Exception e) {
+            list = new Model[0];
+        }
+
+        return constructTable(list);
     }
 
     @Override
     public JTable getPropertyByCondition(String address, PropertyType type) {
-        return null;
+        Model[] list;
+        if (address != null && !address.isEmpty()) {
+            list = new Model[]{(Model)manager.getPropertyConnector().getPropertyByAddress(address)};
+        } else {
+            try{
+                PropertyModel[] properties = manager.getPropertyConnector().selectPropertybyPropertyType(type);
+                list = (Model[]) properties;
+            } catch (Exception e){
+                list = new Model[0];
+            }
+        }
+        return constructTable(list);
     }
 
     @Override
     public JTable getResourceByType(ResourceType type) {
-        return null;
+        Model[] list;
+        try{
+            ResourceModel[] resources = manager.getResourcesConnector().selectResourceByType(type);
+            list = (Model[]) resources;
+        } catch (Exception e) {
+            list = new Model[0];
+        }
+        return constructTable(list);
     }
 
     @Override
     public JTable getPropertyByResourceType(ResourceType type) {
-        return null;
+        Model[] list;
+        try{
+            ResourceModel[] resources = manager.getResourcesConnector().selectResourceByType(type);
+            list = (Model[]) resources;
+        } catch (Exception e) {
+            list = new Model[0];
+        }
+        return constructTable(list);
     }
 
     @Override
     public JTable getPropertyWithResourceID(int id) {
-        return null;
+        Model[] list;
+        try{
+            ResourceModel resourceModel = manager.getResourcesConnector().getResourceByID(id);
+            PropertyModel[] propertyModels = manager.getPropertyConnector().selectPropertyByResource(resourceModel);
+            list = (Model[]) propertyModels;
+        } catch (Exception e) {
+            list = new Model[0];
+        }
+        return constructTable(list);
     }
 
     @Override
