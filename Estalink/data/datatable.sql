@@ -9,12 +9,6 @@ DROP TABLE community;
 DROP TABLE agency_employee;
 DROP TABLE agency;
 
-
-
-
-
-
-
 CREATE TABLE agency
 	(agency_name VARCHAR(255),
 	agency_address VARCHAR(500),
@@ -67,7 +61,7 @@ CREATE TABLE property
 	capacity INT,
 	PRIMARY KEY (property_address),
 	FOREIGN KEY (listing_id) REFERENCES listing (listing_id)
-		ON DELETE SET NULL 
+		ON DELETE CASCADE
 	);
 grant select on property to public;
 
@@ -120,6 +114,7 @@ CREATE TABLE has_property_and_resources
 	FOREIGN KEY (resource_id) REFERENCES public_resources(resource_id)
 		ON DELETE CASCADE,
 	FOREIGN KEY (listing_id) REFERENCES listing(listing_id)	
+		ON DELETE CASCADE
 	);
 grant select on has_property_and_resources to public;
 
@@ -143,7 +138,7 @@ VALUES('GreatAgain', '2095 W 41st Ave, Vancouver', 'Operating since 1978, The Gr
 
 
 INSERT INTO agency_employee
-VALUES(0, 'ADMIN', 'cs304', 31415926);
+VALUES(0, 'ADMIN', 'CS304', 31415926);
 
 INSERT INTO agency_employee
 VALUES(7, 'James Bond', 'Realtor', 0070070007);
@@ -256,7 +251,7 @@ INSERT INTO has_property_and_resources
 VALUES (1, 2);
 
 INSERT INTO has_property_and_resources
-VALUES (1, 6);
+VALUES (1, 4);
 
 INSERT INTO has_property_and_resources
 VALUES (3, 1);
