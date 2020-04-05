@@ -128,11 +128,11 @@ public class ListingFrame extends JFrame implements ActionListener {
                     result = this.handler.getListingByCondition(idField.getText(), priceField.getText(), higher.isSelected(), lType);
                 } else {
                     PropertyType pType = PropertyType.ANY;
-                    switch (listingType.getSelectedItem().toString()){
+                    switch (propertyType.getSelectedItem().toString()){
                         case "APARTMENT":
                             pType = PropertyType.Apartment;
                             break;
-                        case "RENTAL":
+                        case "OFFICE":
                             pType = PropertyType.Office;
                             break;
                         case "HOUSE":

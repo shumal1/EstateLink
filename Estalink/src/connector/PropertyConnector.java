@@ -122,29 +122,28 @@ public class PropertyConnector extends Connector {
 
     public PropertyModel[] selectPropertybyPropertyType(PropertyType type) {
         Connection connection = this.manager.getConnection();
+        ArrayList<PropertyModel> models = new ArrayList<>();
         try {
-            System.out.println("Executing SELECT property_address FROM property WHERE property_type = " + type);
-            PreparedStatement ps = connection.prepareStatement("SELECT property_address FROM property WHERE property_type = (?)");
-            ps.setString(1, type.toString());
+            PreparedStatement ps;
+            if (type == PropertyType.ANY) {
+                ps = connection.prepareStatement("SELECT property_address FROM property");
+            } else {
+
+                System.out.println("Executing SELECT property_address FROM property WHERE property_type = " + type);
+                ps = connection.prepareStatement("SELECT property_address FROM property WHERE property_type = (?)");
+
+                ps.setString(1, type.name());
+            }
 
             ResultSet resultSet = ps.executeQuery();
-            int totalRowCount = 0;
-            if(resultSet.last()) {
-                totalRowCount = resultSet.getRow();
-                resultSet.beforeFirst();
-            }
-            PropertyModel[] propertyModels = new PropertyModel[totalRowCount];
+
             while (resultSet.next()) {
                 String property_address = resultSet.getString(1);
                 PropertyModel propertyModel = this.manager.getPropertyConnector().getPropertyByAddress(property_address);
-                propertyModels[resultSet.getRow()] = propertyModel;
+                models.add(propertyModel);
             }
             ps.close();
-            if(propertyModels.length != 0) {
-                return propertyModels;
-            }
-            lasterr = "There is no property with this property address";
-            return null;
+            return models.toArray(new PropertyModel[0]);
         } catch (SQLException e) {
             lasterr = e.getMessage();
             return null;

@@ -141,7 +141,7 @@ public class ResourcesConnector extends Connector{
     }
 
     private ResourceType getResourceType (int i){
-        ResourceType type = ResourceType.GREENWAY;
+        ResourceType type = ResourceType.INVALID;
         switch (i) {
             case 1:
                 type = ResourceType.BUS;
@@ -186,7 +186,7 @@ public class ResourcesConnector extends Connector{
 
 
     private BusType getBusType (int i){
-        BusType type = BusType.REG;
+        BusType type = BusType.INVALID;
         switch (i) {
             case 1:
                 type = BusType.REG;
@@ -202,7 +202,7 @@ public class ResourcesConnector extends Connector{
     }
 
     private HospitalType getHospitalType (int i) {
-        HospitalType type = HospitalType.ANIMAL;
+        HospitalType type = HospitalType.INVALID;
         switch (i) {
             case 1:
                 type = HospitalType.WALKIN;
