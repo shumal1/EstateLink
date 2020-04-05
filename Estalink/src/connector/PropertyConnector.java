@@ -205,7 +205,7 @@ public class PropertyConnector extends Connector {
         try {
             System.out.println("Executing SELECT listing_id FROM has_property_and_resources WHERE resource_id = " + resourceModel.getResource_ID());
             PreparedStatement ps = connection.prepareStatement("SELECT listing_id FROM has_property_and_resources WHERE resource_id = ?");
-            ps.setString(1, Integer.toString(resourceModel.getResource_ID()));
+            ps.setInt(1, resourceModel.getResource_ID());
             ResultSet resultSet = ps.executeQuery();
             int totalRowCount = 0;
 
@@ -377,7 +377,7 @@ public class PropertyConnector extends Connector {
         try {
             System.out.println("Executing SELECT * FROM property WHERE listing_id = " + id);
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM property WHERE listing_id = (?)");
-            ps.setString(1, Integer.toString(id));
+            ps.setInt(1, id);
 
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {

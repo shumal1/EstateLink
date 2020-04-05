@@ -223,18 +223,45 @@ public class ListingConnector extends Connector{
         }
     }
 
+    public ListingModel selectListingByProperty(String property_address) {
+        Connection connection = this.manager.getConnection();
+        try {
+            System.out.println("Executing SELECT listing_id, listing_price, historical_price, agent_id, listing_type FROM listing JOIN property WHERE property_address = " + property_address);
+            PreparedStatement ps = connection.prepareStatement("SELECT listing_id, listing_price, historical_price, agent_id, listing_type FROM listing JOIN property WHERE property_address = ?");
+            ps.setString(1, property_address);
+
+            ResultSet resultSet = ps.executeQuery();
+            if (resultSet.next()) {
+                int listing_id = resultSet.getInt(1);
+                int listing_price = resultSet.getInt(2);
+                int listing_histprice = resultSet.getInt(3);
+                int agent_id = resultSet.getInt(4);
+                ListingType type = ListingType.valueOf(resultSet.getString(5));
+
+                ps.close();
+                ListingModel listingModel = new ListingModel(listing_id, listing_price, listing_histprice, agent_id, type);
+                return listingModel;
+            }
+            lasterr = "There is no listing with this id";
+            return null;
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
+        }
+    }
+
     public ListingModel[] selectListingByCondition(int id, int price, boolean higher, ListingType type) {
         Connection connection = this.manager.getConnection();
         try {
             System.out.println("Executing SELECT property_address FROM property WHERE property_type = " + type);
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM listing WHERE listing_id = ? AND listing_price ? ? AND listing_type = ?");
-            ps.setString(1, Integer.toString(id));
+            ps.setInt(1, id);
             if(higher) {
                 ps.setString(2, ">");
             } else {
                 ps.setString(2, "<");
             }
-            ps.setString(3, Integer.toString(price));
+            ps.setInt(3, price);
             ps.setString(4, type.toString());
 
             ResultSet resultSet = ps.executeQuery();

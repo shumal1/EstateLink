@@ -201,9 +201,40 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
     }
 
     @Override
-    public JTable getResourceByProperty(String key) {
-        // TODO
-        return null;
+    public JTable getResourceByProperty(String address) {
+        Model[] list;
+        try{
+            PropertyModel propertyModel = manager.getPropertyConnector().getPropertyByAddress(address);
+            ResourceModel[] resourceModels = manager.getResourcesConnector().selectResourceByProperty(propertyModel);
+            list = (Model[]) resourceModels;
+        } catch (Exception e) {
+            list = new Model[0];
+        }
+        return constructTable(list);
+    }
+
+    @Override
+    public JTable getPropertyByListing(int id) {
+        Model[] list;
+        try{
+            PropertyModel propertyModel = manager.getPropertyConnector().selectPropertybyListingID(id);
+            list = new Model[]{(Model)propertyModel};;
+        } catch (Exception e) {
+            list = new Model[0];
+        }
+        return constructTable(list);
+    }
+
+    @Override
+    public JTable getListingByProperty(String address) {
+        Model[] list;
+        try{
+            ListingModel listingModel = manager.getListingConnector().selectListingByProperty(address);
+            list = new Model[]{(Model)listingModel};;
+        } catch (Exception e) {
+            list = new Model[0];
+        }
+        return constructTable(list);
     }
 
     @Override
@@ -222,9 +253,6 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
                 return -1;
         }
     }
-
-    public 
-
 
     // IMPORTANT! USE THIS HELPER TO RETURN JTABLE
     private JTable constructTable(Model[] models) {
