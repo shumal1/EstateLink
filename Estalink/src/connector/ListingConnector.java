@@ -261,6 +261,8 @@ public class ListingConnector extends Connector{
                 }
                 ps.setInt(1, Integer.parseInt(price));
             } else {
+                if (type != ListingType.ANY)
+                    typeCondition = "WHERE listing_type = '" + type.toString() + "'";
                 ps  = connection.prepareStatement("SELECT * FROM listing " + typeCondition);
             }
 
