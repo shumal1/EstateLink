@@ -1,12 +1,14 @@
 package connector;
 
 import model.AgencyModel;
+import model.ListingModel;
 import model.PropertyModel;
 import model.ResourceModel;
 import types.AccountMode;
 import types.PropertyType;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class PropertyConnector extends Connector {
     // Insert, delete, update to Property, PropertyinCommunity, and Neighbour
@@ -196,33 +198,6 @@ public class PropertyConnector extends Connector {
         } catch (SQLException e) {
             lasterr = e.getMessage();
             return false;
-        }
-    }
-
-    public PropertyModel[] selectPropertyByResource(ResourceModel resourceModel) {
-        Connection connection = this.manager.getConnection();
-
-        try {
-            System.out.println("Executing SELECT listing_id FROM has_property_and_resources WHERE resource_id = " + resourceModel.getResource_ID());
-            PreparedStatement ps = connection.prepareStatement("SELECT listing_id FROM has_property_and_resources WHERE resource_id = ?");
-            ps.setInt(1, resourceModel.getResource_ID());
-            ResultSet resultSet = ps.executeQuery();
-            int totalRowCount = 0;
-
-            if(resultSet.last()) {
-                totalRowCount = resultSet.getRow();
-                resultSet.beforeFirst();
-            }
-            PropertyModel[] propertyModels = new PropertyModel[totalRowCount];
-            while (resultSet.next()) {
-                int id = resultSet.getInt(1);
-                propertyModels[resultSet.getRow()] = selectPropertybyListingID(id);
-            }
-
-            return propertyModels;
-        } catch (SQLException e) {
-            lasterr = e.getMessage();
-            return null;
         }
     }
 

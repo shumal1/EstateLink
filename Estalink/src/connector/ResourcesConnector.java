@@ -8,6 +8,7 @@ import types.HospitalType;
 import types.ResourceType;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class ResourcesConnector extends Connector{
     // Access to HasPropertyandResources, and selection on Public Resources
@@ -21,7 +22,7 @@ public class ResourcesConnector extends Connector{
     public ResourceModel getResourceByID(int resource_id) {
         Connection connection = this.manager.getConnection();
         try {
-            System.out.println("Executing SELECT * FROM has_property_and_resources WHERE resource_id = " + resource_id);
+            System.out.println("Executing SELECT * FROM public_resources WHERE resource_id = " + resource_id);
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM public_resources WHERE resource_id = (?)");
 
             ps.setInt(1, resource_id);
@@ -40,23 +41,22 @@ public class ResourcesConnector extends Connector{
 
     public ResourceModel[] selectResourceByType(ResourceType resourceType) {
         Connection connection = this.manager.getConnection();
-        ResourceModel[] resourceModels = new ResourceModel[999]; //not sure about the size
+        ArrayList<ResourceModel> resourceModels = new ArrayList<>();
         try {
-            System.out.println("Executing SELECT * FROM public_resources WHERE resource_type = " + resourceType);
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM public_resources WHERE resource_type = (?)");
 
             int resourceTypeIndex = getResourceTypeIndex(resourceType);
             ps.setInt(1, resourceTypeIndex);
             ResultSet resultSet = ps.executeQuery();
 
-            int i = 0;
+            System.out.println("Executing SELECT * FROM public_resources WHERE resource_type = " + resourceTypeIndex);
 
             while (resultSet.next()) {
-                resourceModels[i] = getResourceModel(ps, resultSet);
-                i++;
+                resourceModels.add(getResourceModel(ps, resultSet));
             }
 
-            return resourceModels;
+            ps.close();
+            return resourceModels.toArray(new ResourceModel[0]);
         } catch (SQLException e) {
             lasterr = e.getMessage();
             return null;
@@ -65,7 +65,7 @@ public class ResourcesConnector extends Connector{
 
     public ResourceModel[] selectResourceByName(String name) {
         Connection connection = this.manager.getConnection();
-        ResourceModel[] resourceModels = new ResourceModel[999]; //not sure about the size
+        ArrayList<ResourceModel> resourceModels = new ArrayList<>();
         try {
             System.out.println("Executing SELECT * FROM public_resources WHERE resource_name = " + name);
             PreparedStatement ps = connection.prepareStatement("SELECT * FROM public_resources WHERE resource_name = (?)");
@@ -73,13 +73,12 @@ public class ResourcesConnector extends Connector{
             ps.setString(1, name);
             ResultSet resultSet = ps.executeQuery();
 
-            int i = 0;
             while (resultSet.next()) {
-                resourceModels[i] = getResourceModel(ps, resultSet);
-                i++;
+                resourceModels.add(getResourceModel(ps, resultSet));
             }
 
-            return resourceModels;
+            ps.close();
+            return resourceModels.toArray(new ResourceModel[0]);
         } catch (SQLException e) {
             lasterr = e.getMessage();
             return null;
@@ -88,7 +87,7 @@ public class ResourcesConnector extends Connector{
 
     public ResourceModel[] selectResourceByProperty(PropertyModel property) {
         Connection connection = this.manager.getConnection();
-        ResourceModel[] resourceModels = new ResourceModel[999]; //not sure about the size
+        ArrayList<ResourceModel> resourceModels = new ArrayList<>();
         try {
             String addr = property.getAddress();
             System.out.println("Executing SELECT resource_id, resource_name," +
@@ -103,13 +102,12 @@ public class ResourcesConnector extends Connector{
             ps.setString(1, addr);
             ResultSet resultSet = ps.executeQuery();
 
-            int i = 0;
             while (resultSet.next()) {
-                resourceModels[i] = getResourceModel(ps, resultSet);
-                i++;
+                resourceModels.add(getResourceModel(ps, resultSet));
             }
 
-            return resourceModels;
+            ps.close();
+            return resourceModels.toArray(new ResourceModel[0]);
         } catch (SQLException e) {
             lasterr = e.getMessage();
             return null;
@@ -143,7 +141,7 @@ public class ResourcesConnector extends Connector{
     }
 
     private ResourceType getResourceType (int i){
-        ResourceType type;
+        ResourceType type = ResourceType.GREENWAY;
         switch (i) {
             case 1:
                 type = ResourceType.BUS;
@@ -157,7 +155,7 @@ public class ResourcesConnector extends Connector{
             case 4:
                 type = ResourceType.SKYTRAIN;
                 break;
-            default:
+            case 5:
                 type = ResourceType.GREENWAY;
                 break;
         }
@@ -165,7 +163,7 @@ public class ResourcesConnector extends Connector{
     }
 
     private int getResourceTypeIndex (ResourceType resourceType){
-        int index;
+        int index = 0;
         switch (resourceType){
             case BUS:
                 index = 1;
@@ -179,7 +177,7 @@ public class ResourcesConnector extends Connector{
             case SKYTRAIN:
                 index = 4;
                 break;
-            default:
+            case GREENWAY:
                 index = 5;
                 break;
         }
@@ -188,7 +186,7 @@ public class ResourcesConnector extends Connector{
 
 
     private BusType getBusType (int i){
-        BusType type;
+        BusType type = BusType.REG;
         switch (i) {
             case 1:
                 type = BusType.REG;
@@ -196,7 +194,7 @@ public class ResourcesConnector extends Connector{
             case 2:
                 type = BusType.EXPRESS;
                 break;
-            default:
+            case 3:
                 type = BusType.RAPID;
                 break;
         }
@@ -204,7 +202,7 @@ public class ResourcesConnector extends Connector{
     }
 
     private HospitalType getHospitalType (int i) {
-        HospitalType type;
+        HospitalType type = HospitalType.ANIMAL;
         switch (i) {
             case 1:
                 type = HospitalType.WALKIN;
@@ -215,7 +213,7 @@ public class ResourcesConnector extends Connector{
             case 3:
                 type = HospitalType.ANIMAL;
                 break;
-            default:
+            case 4:
                 type = HospitalType.PHARM;
                 break;
         }
@@ -233,7 +231,6 @@ public class ResourcesConnector extends Connector{
         String description = resultSet.getString(5);
         HospitalType hospital_type = getHospitalType(hospital_type_int);
 
-        ps.close();
         return new ResourceModel(id, resource_name, resource_type, transit_type, description,
                 hospital_type);
     }

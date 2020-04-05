@@ -2,6 +2,7 @@ package connector;
 
 import model.ListingModel;
 import model.PropertyModel;
+import model.ResourceModel;
 import types.AccountMode;
 import types.ListingType;
 import types.PropertyType;
@@ -11,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListingConnector extends Connector{
@@ -160,7 +162,7 @@ public class ListingConnector extends Connector{
 
             int i = 0;
             while (resultSet.next()) {
-                listingModels[i] = getListingModel(ps, resultSet);
+                listingModels[i] = getListingModel(resultSet);
                 i++;
             }
 
@@ -183,7 +185,7 @@ public class ListingConnector extends Connector{
 
             int i = 0;
             while (resultSet.next()) {
-                listingModels[i] = getListingModel(ps, resultSet);
+                listingModels[i] = getListingModel(resultSet);
                 i++;
             }
 
@@ -212,7 +214,7 @@ public class ListingConnector extends Connector{
 
             int i = 0;
             while (resultSet.next()) {
-                listingModels[i] = getListingModel(ps, resultSet);
+                listingModels[i] = getListingModel(resultSet);
                 i++;
             }
             return listingModels;
@@ -290,7 +292,28 @@ public class ListingConnector extends Connector{
         }
     }
 
-    private ListingModel getListingModel(PreparedStatement ps, ResultSet resultSet) throws  SQLException {
+    public ListingModel[] selectListingByResource(int id) {
+        Connection connection = this.manager.getConnection();
+        ArrayList<ListingModel> models = new ArrayList<>();
+
+        try {
+            System.out.println("Executing select * from listing where listing_id in (select listing_id from has_property_and_resources where resource_id  = " + id);
+            PreparedStatement ps = connection.prepareStatement("select * from listing where listing_id in (select listing_id from has_property_and_resources where resource_id = (?))");
+            ps.setInt(1, id);
+            ResultSet resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+                models.add(getListingModel(resultSet));
+            }
+
+            return models.toArray(new ListingModel[0]);
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
+        }
+    }
+
+    private ListingModel getListingModel(ResultSet resultSet) throws  SQLException {
         int id = resultSet.getInt(1);
         int price = resultSet.getInt(2);
         int historical_price = resultSet.getInt(3);

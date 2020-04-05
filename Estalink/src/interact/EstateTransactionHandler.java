@@ -168,7 +168,7 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
         Model[] list;
         try{
             ResourceModel[] resources = manager.getResourcesConnector().selectResourceByType(type);
-            list = (Model[]) resources;
+            list =  resources;
         } catch (Exception e) {
             list = new Model[0];
         }
@@ -191,9 +191,8 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
     public JTable getPropertyWithResourceID(int id) {
         Model[] list;
         try{
-            ResourceModel resourceModel = manager.getResourcesConnector().getResourceByID(id);
-            PropertyModel[] propertyModels = manager.getPropertyConnector().selectPropertyByResource(resourceModel);
-            list = (Model[]) propertyModels;
+            ListingModel[] propertyModels = manager.getListingConnector().selectListingByResource(id);
+            list = propertyModels;
         } catch (Exception e) {
             list = new Model[0];
         }
