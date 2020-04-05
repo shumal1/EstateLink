@@ -1,5 +1,5 @@
 package types;
 
 public enum ListingType {
-    RENTAL, SELLING;
+    RENTAL, SELLING, ANY;
 }

@@ -3,6 +3,8 @@ package ui;
 import handler.AgentTransactionHandler;
 import handler.ListingTransactionHandler;
 import types.AccountMode;
+import types.ListingType;
+import types.PropertyType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -110,23 +112,62 @@ public class ListingFrame extends JFrame implements ActionListener {
             case "Submit" :
                 // TODO USE HANDLER TO PERFORM SEARCH!
                 // Obtain result here
-                JTable result = null; // stub
+                JTable result = new JTable(); // stub
+
+                if (isListing) {
+                    int id = Integer.parseInt(idField.getText());
+                    int price = Integer.parseInt(priceField.getText());
+                    ListingType lType = ListingType.ANY;
+                    switch (listingType.getSelectedItem().toString()){
+                        case "SELLING":
+                            lType = ListingType.SELLING;
+                            break;
+                        case "RENTAL":
+                            lType = ListingType.RENTAL;
+                            break;
+                        default:
+                            break;
+                    }
+                    result = this.handler.getListingByCondition(id, price, higher.isSelected(), lType);
+                } else {
+                    PropertyType pType = PropertyType.ANY;
+                    switch (listingType.getSelectedItem().toString()){
+                        case "APARTMENT":
+                            pType = PropertyType.Apartment;
+                            break;
+                        case "RENTAL":
+                            pType = PropertyType.Office;
+                            break;
+                        case "HOUSE":
+                            pType = PropertyType.House;
+                            break;
+                        default:
+                            break;
+                    }
+                    result = this.handler.getPropertyByCondition(addressField.getText(), pType);
+                }
+                leftHolder = new JScrollPane(result);
+                leftHolder.setBounds(10, 150, 400, 100);
+                this.add(leftHolder);
+                this.repaint();
+
+                JTable finalResult = result;
                 result.addMouseMotionListener(new MouseMotionListener() {
                     int hoveredRow = -1, hoveredColumn = -1;
                     @Override
                     public void mouseMoved(MouseEvent e) {
                         // Use functions in this.handler to do lookup
                         Point p = e.getPoint();
-                        hoveredRow = result.rowAtPoint(p);
-                        hoveredColumn = result.columnAtPoint(p);
-                        result.setRowSelectionInterval(hoveredRow, hoveredRow);
-                        reverseLookup(result.getValueAt(hoveredRow, 0).toString());
-                        result.repaint();
+                        hoveredRow = finalResult.rowAtPoint(p);
+                        hoveredColumn = finalResult.columnAtPoint(p);
+                        finalResult.setRowSelectionInterval(hoveredRow, hoveredRow);
+                        reverseLookup(finalResult.getValueAt(hoveredRow, 0).toString());
+                        finalResult.repaint();
                     }
                     @Override
                     public void mouseDragged(MouseEvent e) {
                         hoveredRow = hoveredColumn = -1;
-                        result.repaint();
+                        finalResult.repaint();
                     }
                 });
                 leftHolder.getViewport().removeAll();
@@ -142,15 +183,19 @@ public class ListingFrame extends JFrame implements ActionListener {
         // If type is listing, then lookup property with the listing_id.
         // If type is property, then lookup listing with the property address.
         if (!key.equals(currkey)) {
+            JTable result = new JTable(); //stub
+            currkey = key;
             if (isListing) {
-                currkey = key;
                 // Use functions in this.handler to do lookup
-                JTable result = null; //stub
-                rightHolder.getViewport().removeAll();
-                rightHolder.getViewport().add(result);
-                rightHolder.repaint();
-                this.pack();
+                result = this.handler.getPropertyByListing(Integer.parseInt(currkey));
+            } else {
+                result = this.handler.getListingByProperty(currkey);
+
             }
+            rightHolder.getViewport().removeAll();
+            rightHolder.getViewport().add(result);
+            rightHolder.repaint();
+            this.pack();
         }
     }
 
@@ -232,7 +277,7 @@ public class ListingFrame extends JFrame implements ActionListener {
         c.gridy = 1;
         c.gridx = 0;
 
-        JLabel typePrompt = new JLabel("Listing type: ");
+        JLabel typePrompt = new JLabel("Property type: ");
         propertyPanel.add(typePrompt, c);
 
         c.gridx = 1;

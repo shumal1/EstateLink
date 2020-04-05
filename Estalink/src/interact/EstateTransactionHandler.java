@@ -136,10 +136,17 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
 
     @Override
     public JTable getListingByCondition(int id, int price, boolean higher, ListingType type) {
-        return null;
+        Model[] list;
+        try {
+            ListingModel[] listingModels = manager.getListingConnector().selectListingByCondition(id, price, higher, type);
+            list = (Model[]) listingModels;
+        } catch (Exception e) {
+            list = new Model[0];
+        }
+
+        return constructTable(list);
     }
 
-    //
     @Override
     public JTable getPropertyByCondition(String address, PropertyType type) {
         Model[] list;
@@ -193,8 +200,14 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
         return constructTable(list);
     }
 
+    @Override
+    public JTable getResourceByProperty(String key) {
+        // TODO
+        return null;
+    }
 
-    public static int getCurrentAgentID() {
+    @Override
+    public int getCurrentAgentID() {
         switch (manager.getCurrentMode()) {
             case ADMIN:
                 return 0;
@@ -209,6 +222,8 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
                 return -1;
         }
     }
+
+    public 
 
 
     // IMPORTANT! USE THIS HELPER TO RETURN JTABLE

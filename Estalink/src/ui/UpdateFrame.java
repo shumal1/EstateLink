@@ -276,7 +276,7 @@ public class UpdateFrame extends JFrame implements ActionListener {
                                 duplex = Boolean.parseBoolean(isDuplex.getSelectedItem().toString());
                                 break;
                         }
-                        int agentID = EstateTransactionHandler.getCurrentAgentID();
+                        int agentID = handler.getCurrentAgentID();
                         int listingID = EstateTransactionHandler.getNextListingID();
                         ListingType listing = ListingType.RENTAL;
                         if (listingType.getSelectedItem().toString() == "SELL"){
