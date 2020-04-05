@@ -1,10 +1,6 @@
 package ui;
 
-import connector.AgentConnector;
-import connector.ListingConnector;
 import handler.ListingTransactionHandler;
-import handler.TransactionHandler;
-import interact.EstateTransactionHandler;
 import types.ListingType;
 import types.PropertyType;
 
@@ -12,14 +8,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Objects;
 
 public class UpdateFrame extends JFrame implements ActionListener {
 
     private EstateUI parent;
     private ListingTransactionHandler handler;
     private JPanel insertPanel, deletePanel, updatePanel;
-    private JTextField addressField, deleteID, updateID, dimensionField, postalCodeField, apartmentNumberField, capacityField, priceField;
+    private JTextField addressField, deleteID, updateID, dimensionField, postalCodeField, apartmentNumberField, capacityField, updatePriceField, insertPriceField;
     private JComboBox<String> operation, propertyType, listingType, isDuplex;
     private JLabel isDuplexPrompt, capacityPrompt, apartmentPrompt;
 
@@ -146,6 +141,15 @@ public class UpdateFrame extends JFrame implements ActionListener {
 
         c.gridy = 5;
         c.gridx = 0;
+        JLabel pricePrompt = new JLabel("Price: ");
+        insertPanel.add(pricePrompt, c);
+
+        c.gridx = 1;
+        insertPriceField = new JTextField(10);
+        insertPanel.add(insertPriceField, c);
+
+        c.gridy = 6;
+        c.gridx = 0;
         capacityPrompt = new JLabel("Capacity: ");
         capacityPrompt.setVisible(false);
         insertPanel.add(capacityPrompt, c);
@@ -212,8 +216,8 @@ public class UpdateFrame extends JFrame implements ActionListener {
         updatePanel.add(pricePrompt, c);
 
         c.gridx = 1;
-        priceField = new JTextField(10);
-        updatePanel.add(priceField, c);
+        updatePriceField = new JTextField(10);
+        updatePanel.add(updatePriceField, c);
     }
 
     @Override
@@ -282,9 +286,14 @@ public class UpdateFrame extends JFrame implements ActionListener {
                         if (listingType.getSelectedItem().toString().equals("SELL")){
                             listing = ListingType.SELLING;
                         }
-                        response =
-                        handler.insertPropertyListing(addressField.getText(), type,
-                                dimensionField.getText(), postalCodeField.getText(), duplex, apartmentNum, capacity, 0, listing, agentID);
+                        try {
+                            response =
+                                    handler.insertPropertyListing(addressField.getText(), type,
+                                            dimensionField.getText(), postalCodeField.getText(), duplex, apartmentNum, capacity, Integer.parseInt(insertPriceField.getText()), listing, agentID);
+                        } catch (NumberFormatException e) {
+                            response = "Invalid format for price! Must be integer.";
+                        }
+
 
                         JOptionPane.showMessageDialog(this, response);
                         break;
@@ -293,7 +302,7 @@ public class UpdateFrame extends JFrame implements ActionListener {
                         JOptionPane.showMessageDialog(this, response);
                         break;
                     case "UPDATE":
-                        response = handler.updateListing(Integer.parseInt(updateID.getText()), Integer.parseInt(priceField.getText()));
+                        response = handler.updateListing(Integer.parseInt(updateID.getText()), Integer.parseInt(updatePriceField.getText()));
                         JOptionPane.showMessageDialog(this, response);
                         break;
                 }

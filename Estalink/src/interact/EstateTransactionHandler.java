@@ -23,7 +23,7 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
     private static final String SUCCESS_RESPONSE  = "SQL_SUCCESS, requested update completed";
 
     public boolean changeMode(AccountMode mode, String userID, String password) {
-        this.currUID = userID;
+        this.currUID = password;
         return manager.changeMode(mode, userID, password);
     }
 
