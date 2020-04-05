@@ -7,4 +7,5 @@ public interface ResourceTransactionHandler extends TransactionHandler{
     JTable getResourceByType(ResourceType type);
     JTable getPropertyByResourceType(ResourceType type);
     JTable getPropertyWithResourceID(int id);
+    JTable getResourceByProperty(String key);
 }

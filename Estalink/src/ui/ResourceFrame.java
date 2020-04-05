@@ -3,6 +3,7 @@ package ui;
 import handler.ListingTransactionHandler;
 import handler.ResourceTransactionHandler;
 import types.AccountMode;
+import types.ResourceType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -101,36 +102,77 @@ public class ResourceFrame extends JFrame implements ActionListener {
                 // TODO SELECT RESOURCE OR PROPERTY BY TYPE
                 // Obtain result here
                 // Use functions in this.handler to do lookup
-                JTable result = null; // stub
+                ResourceType type = ResourceType.BUS;
+                switch (resourceType.getSelectedItem().toString()){
+                    case "GREENWAY":
+                        type = ResourceType.GREENWAY;
+                        break;
+                    case "HOSPITAL":
+                        type = ResourceType.HOSPITAL;
+                        break;
+                    case "SKYTRAIN":
+                        type = ResourceType.SKYTRAIN;
+                        break;
+                    case "PARK":
+                        type = ResourceType.PARK;
+                        break;
+                    default:
+                        break;
+                }
+                JTable result = new JTable(); // stub
+                if (searchProperty.isSelected()){
+                    result = handler.getPropertyByResourceType(type);
+                } else {
+                    result = handler.getResourceByType(type);
+                }
+                leftholder = new JScrollPane(result);
+                leftholder.setBounds(10, 150, 200, 100);
+                this.add(leftholder);
+                this.repaint();
+                leftholder.getViewport().removeAll();
+                leftholder.getViewport().add(result);
+                leftholder.repaint();
+                this.pack();
+
+                JTable finalResult = result;
                 result.addMouseMotionListener(new MouseMotionListener() {
                     int hoveredRow = -1, hoveredColumn = -1;
                     @Override
                     public void mouseMoved(MouseEvent e) {
                         Point p = e.getPoint();
-                        hoveredRow = result.rowAtPoint(p);
-                        hoveredColumn = result.columnAtPoint(p);
-                        result.setRowSelectionInterval(hoveredRow, hoveredRow);
-                        reverseLookup(result.getValueAt(hoveredRow, 0).toString());
-                        result.repaint();
+                        hoveredRow = finalResult.rowAtPoint(p);
+                        hoveredColumn = finalResult.columnAtPoint(p);
+                        finalResult.setRowSelectionInterval(hoveredRow, hoveredRow);
+                        reverseLookup(finalResult.getValueAt(hoveredRow, 0).toString(), searchProperty.isSelected());
+                        finalResult.repaint();
                     }
                     @Override
                     public void mouseDragged(MouseEvent e) {
                         hoveredRow = hoveredColumn = -1;
-                        result.repaint();
+                        finalResult.repaint();
                     }
                 });
-                leftholder.getViewport().removeAll();
-                leftholder.getViewport().add(result);
-                leftholder.repaint();
-                this.pack();
                 break;
         }
     }
 
-    private void reverseLookup(String key) {
+    private void reverseLookup(String key, boolean isProperty) {
         // TODO REVERSE LOOKUP
         // Implement this
         if (!key.equals(currkey)) {
+            currkey = key;
+            this.remove(rightholder);
+            JTable result = new JTable();
+            if (isProperty){
+                int id = Integer.parseInt(key);
+                result = this.handler.getPropertyWithResourceID(id);
+            } else {
+                result = this.handler.getResourceByProperty(key);
+            }
+            rightholder = new JScrollPane(result);
+            rightholder.setBounds(220, 150, 150, 100);
+            this.add(rightholder);
+            this.repaint();
             // If searching property, then on right panel display all resources that the property has
             // If searching resource, then on right panel display all property that have this resource
             // Use functions in this.handler to do lookup
