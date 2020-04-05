@@ -372,7 +372,7 @@ public class PropertyConnector extends Connector {
         }
     }
 
-    private PropertyModel selectPropertybyListingID(int id) {
+    public PropertyModel selectPropertybyListingID(int id) {
         Connection connection = this.manager.getConnection();
         try {
             System.out.println("Executing SELECT * FROM property WHERE listing_id = " + id);

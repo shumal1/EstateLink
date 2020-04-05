@@ -216,6 +216,8 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
         }
     }
 
+    public 
+
 
     // IMPORTANT! USE THIS HELPER TO RETURN JTABLE
     private JTable constructTable(Model[] models) {
