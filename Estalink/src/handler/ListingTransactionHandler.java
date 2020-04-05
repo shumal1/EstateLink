@@ -30,4 +30,6 @@ public interface ListingTransactionHandler extends TransactionHandler {
     // ListingModel[] getListingByPercentageChange(double percentage, boolean higher);
 
     JTable getPropertyByCondition(String address, PropertyType type);
+    JTable getPropertyByListing(int id);
+    JTable getListingByProperty(String address);
 }
