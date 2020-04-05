@@ -252,20 +252,38 @@ public class ListingConnector extends Connector{
         }
     }
 
-    public ListingModel[] selectListingByCondition(int id, int price, boolean higher, ListingType type) {
+    public ListingModel[] selectListingByCondition(String id, String price, boolean higher, ListingType type) {
         Connection connection = this.manager.getConnection();
         try {
-            System.out.println("Executing SELECT property_address FROM property WHERE property_type = " + type);
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM listing WHERE listing_id = ? AND listing_price ? ? AND listing_type = ?");
-            ps.setInt(1, id);
-            if(higher) {
-                ps.setString(2, ">");
+            String typeCondition = "";
+            if (type != ListingType.ANY)
+                typeCondition = "AND listing_type = " + type.toString();
+            System.out.println("Executing SELECT property_address FROM property WHERE property_type = " + type.toString());
+            PreparedStatement ps  = connection.prepareStatement("SELECT * FROM listing WHERE listing_id = ? AND listing_price ? ? " + typeCondition);
+            if (id != "" && price != "") {
+                ps.setInt(1, Integer.parseInt(id));
+                if (higher) {
+                    ps.setString(2, ">");
+                } else {
+                    ps.setString(2, "<");
+                }
+                ps.setInt(3, Integer.parseInt(price));
+            } else if (id == "") {
+                ps  = connection.prepareStatement("SELECT * FROM listing WHERE listing_price ? ? " + typeCondition);
+                if (higher) {
+                    ps.setString(1, ">");
+                } else {
+                    ps.setString(1, "<");
+                }
+                ps.setInt(2, Integer.parseInt(price));
+            } else if (price == ""){
+                ps  = connection.prepareStatement("SELECT * FROM listing WHERE listing_id = ?" + typeCondition);
+                ps.setInt(1, Integer.parseInt(id));
             } else {
-                ps.setString(2, "<");
+                if (type != ListingType.ANY)
+                    typeCondition = "WHERE listing_type = " + type.toString();
+                ps  = connection.prepareStatement("SELECT * FROM listing " + typeCondition);
             }
-            ps.setInt(3, price);
-            ps.setString(4, type.toString());
-
             ResultSet resultSet = ps.executeQuery();
             int totalRowCount = 0;
             if(resultSet.last()) {

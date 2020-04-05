@@ -26,7 +26,7 @@ public interface ListingTransactionHandler extends TransactionHandler {
     String deleteListing(int listing_id);
 
     // note that this one should use LIKE %address% to perform match, so empty string is treated as wildcard
-    JTable getListingByCondition(int id, int price, boolean higher, ListingType type);
+    JTable getListingByCondition(String id, String price, boolean higher, ListingType type);
     // ListingModel[] getListingByPercentageChange(double percentage, boolean higher);
 
     JTable getPropertyByCondition(String address, PropertyType type);
