@@ -242,7 +242,7 @@ public class ListingConnector extends Connector{
         try {
             String typeCondition = "";
             if (type != ListingType.ANY)
-                typeCondition = "AND listing_type = " + type.toString();
+                typeCondition = "AND listing_type = '" + type.toString() + "'";
             PreparedStatement ps;
             if (!id.equals("") && !price.equals("")) {
                 if (higher) {
@@ -256,13 +256,12 @@ public class ListingConnector extends Connector{
                 ps  = connection.prepareStatement("SELECT * FROM listing WHERE listing_id = ?" + typeCondition);
                 ps.setInt(1, Integer.parseInt(id));
             } else if (!price.equals("")){
-                ps  = connection.prepareStatement("SELECT * FROM listing WHERE listing_price ? ? " + typeCondition);
                 if (higher) {
-                    ps.setString(1, ">");
+                    ps = connection.prepareStatement("SELECT * FROM listing WHERE listing_price > ? " + typeCondition);
                 } else {
-                    ps.setString(1, "<");
+                    ps = connection.prepareStatement("SELECT * FROM listing WHERE listing_price < ? " + typeCondition);
                 }
-                ps.setInt(2, Integer.parseInt(price));
+                ps.setInt(1, Integer.parseInt(price));
             } else {
                 ps  = connection.prepareStatement("SELECT * FROM listing " + typeCondition);
             }
