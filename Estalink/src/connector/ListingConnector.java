@@ -320,7 +320,7 @@ public class ListingConnector extends Connector{
         int agent_id = resultSet.getInt(4);
         String type = resultSet.getString(5);
         ListingType listingType = ListingType.SELLING;
-        if (type == "RENTAL")
+        if (type.equals("RENTAL"))
             listingType = ListingType.RENTAL;
         return new ListingModel(id, price, historical_price, agent_id, listingType);
 

@@ -139,7 +139,7 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
         Model[] list;
         try {
             ListingModel[] listingModels = manager.getListingConnector().selectListingByCondition(id, price, higher, type);
-            list = (Model[]) listingModels;
+            list = listingModels;
         } catch (Exception e) {
             list = new Model[0];
         }
@@ -151,11 +151,11 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
     public JTable getPropertyByCondition(String address, PropertyType type) {
         Model[] list;
         if (address != null && !address.isEmpty()) {
-            list = new Model[]{(Model)manager.getPropertyConnector().getPropertyByAddress(address)};
+            list = new Model[]{manager.getPropertyConnector().getPropertyByAddress(address)};
         } else {
             try{
                 PropertyModel[] properties = manager.getPropertyConnector().selectPropertybyPropertyType(type);
-                list = (Model[]) properties;
+                list = properties;
             } catch (Exception e){
                 list = new Model[0];
             }
@@ -180,7 +180,7 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
         Model[] list;
         try{
             ResourceModel[] resources = manager.getResourcesConnector().selectResourceByType(type);
-            list = (Model[]) resources;
+            list = resources;
         } catch (Exception e) {
             list = new Model[0];
         }
@@ -205,7 +205,7 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
         try{
             PropertyModel propertyModel = manager.getPropertyConnector().getPropertyByAddress(address);
             ResourceModel[] resourceModels = manager.getResourcesConnector().selectResourceByProperty(propertyModel);
-            list = (Model[]) resourceModels;
+            list = resourceModels;
         } catch (Exception e) {
             list = new Model[0];
         }
@@ -217,7 +217,7 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
         Model[] list;
         try{
             PropertyModel propertyModel = manager.getPropertyConnector().selectPropertybyListingID(id);
-            list = new Model[]{(Model)propertyModel};;
+            list = new Model[]{propertyModel};;
         } catch (Exception e) {
             list = new Model[0];
         }
@@ -229,7 +229,7 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
         Model[] list;
         try{
             ListingModel listingModel = manager.getListingConnector().selectListingByProperty(address);
-            list = new Model[]{(Model)listingModel};;
+            list = new Model[]{listingModel};;
         } catch (Exception e) {
             list = new Model[0];
         }

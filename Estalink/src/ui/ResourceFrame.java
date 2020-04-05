@@ -1,8 +1,5 @@
 package ui;
-
-import handler.ListingTransactionHandler;
 import handler.ResourceTransactionHandler;
-import types.AccountMode;
 import types.ResourceType;
 
 import javax.swing.*;
@@ -46,17 +43,18 @@ public class ResourceFrame extends JFrame implements ActionListener {
         resourceType.setSelectedIndex(0);
         this.add(resourceType, c);
 
-        searchResource = new JRadioButton("Resource");
-        searchProperty = new JRadioButton("Property");
-        ButtonGroup g = new ButtonGroup();
-        g.add(searchResource);
-        g.add(searchProperty);
-        g.setSelected(searchResource.getModel(), true);
+        // Only allow select on resource for now
+        // searchResource = new JRadioButton("Resource");
+        // searchProperty = new JRadioButton("Property");
+        // ButtonGroup g = new ButtonGroup();
+        // g.add(searchResource);
+        // g.add(searchProperty);
+        // g.setSelected(searchResource.getModel(), true);
 
-        c.gridx = 1;
-        this.add(searchResource, c);
-        c.gridx = 2;
-        this.add(searchProperty, c);
+        // c.gridx = 1;
+        // this.add(searchResource, c);
+        // c.gridx = 2;
+        // this.add(searchProperty, c);
 
 
         c.gridy = 2;
@@ -120,11 +118,11 @@ public class ResourceFrame extends JFrame implements ActionListener {
                         break;
                 }
                 JTable result = new JTable(); // stub
-                if (searchProperty.isSelected()){
-                    result = handler.getPropertyByResourceType(type);
-                } else {
+                // if (searchProperty.isSelected()){
+                //     result = handler.getPropertyByResourceType(type);
+                // } else {
                     result = handler.getResourceByType(type);
-                }
+                // }
                 leftholder.getViewport().removeAll();
                 leftholder.getViewport().add(result);
                 leftholder.repaint();
@@ -139,7 +137,7 @@ public class ResourceFrame extends JFrame implements ActionListener {
                         hoveredRow = finalResult.rowAtPoint(p);
                         hoveredColumn = finalResult.columnAtPoint(p);
                         finalResult.setRowSelectionInterval(hoveredRow, hoveredRow);
-                        reverseLookup(finalResult.getValueAt(hoveredRow, 0).toString(), searchProperty.isSelected());
+                        reverseLookup(finalResult.getValueAt(hoveredRow, 0).toString());
                         finalResult.repaint();
                     }
                     @Override
@@ -152,18 +150,18 @@ public class ResourceFrame extends JFrame implements ActionListener {
         }
     }
 
-    private void reverseLookup(String key, boolean isProperty) {
+    private void reverseLookup(String key) {
         // TODO REVERSE LOOKUP
         // Implement this
         if (!key.equals(currkey)) {
             currkey = key;
-            JTable result = new JTable();
-            if (isProperty){
-                result = this.handler.getResourceByProperty(key);
-            } else {
+            JTable result;
+            // if (searchProperty.isSelected()){
+            //    result = this.handler.getResourceByProperty(key);
+            // } else {
                 int id = Integer.parseInt(key);
                 result = this.handler.getPropertyWithResourceID(id);
-            }
+            // }
             rightholder.getViewport().removeAll();
             rightholder.getViewport().add(result);
             rightholder.repaint();
