@@ -70,6 +70,11 @@ public class ListingFrame extends JFrame implements ActionListener {
         submit.addActionListener(this);
         gb.setConstraints(submit, c);
 
+        c.gridx = 1;
+        JButton statistics = new JButton("Show Statistics");
+        gb.setConstraints(statistics,c);
+        statistics.addActionListener(this);
+
         leftHolder = new JScrollPane();
         c.gridy = 4;
         c.gridx = 0;
@@ -84,6 +89,7 @@ public class ListingFrame extends JFrame implements ActionListener {
         this.add(propertyPanel);
         this.add(leftHolder);
         this.add(rightHolder);
+        this.add(statistics);
 
         this.add(submit);
         propertyPanel.setVisible(false);
@@ -108,6 +114,19 @@ public class ListingFrame extends JFrame implements ActionListener {
             case "Menu":
                 this.setVisible(false);
                 parent.switchFrame(EstateUI.states.Menu.name());
+                break;
+            case "Show Statistics":
+                JTable statResult;
+                statResult = this.handler.getListingStatistics();
+                leftHolder.getViewport().removeAll();
+                leftHolder.getViewport().add(statResult);
+                leftHolder.repaint();
+
+                statResult = this.handler.getListingStatisticsGroup();
+                rightHolder.getViewport().removeAll();
+                rightHolder.getViewport().add(statResult);
+                rightHolder.repaint();
+                this.pack();
                 break;
             case "Submit" :
                 // TODO USE HANDLER TO PERFORM SEARCH!

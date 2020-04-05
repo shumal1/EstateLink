@@ -32,4 +32,6 @@ public interface ListingTransactionHandler extends TransactionHandler {
     JTable getPropertyByCondition(String address, PropertyType type);
     JTable getPropertyByListing(int id);
     JTable getListingByProperty(String address);
+    JTable getListingStatistics();
+    JTable getListingStatisticsGroup();
 }

@@ -82,6 +82,9 @@ public class EstateUI extends JFrame implements ActionListener {
         gb.setConstraints(agentView, c);
         gb.setConstraints(listingView, c);
 
+        c.gridy =  7;
+
+
         mainMenu.add(updateView);
         if (mode == AccountMode.GUEST) {
             updateView.setVisible(false);

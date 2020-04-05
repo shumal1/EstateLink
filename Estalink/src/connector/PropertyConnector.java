@@ -336,6 +336,30 @@ public class PropertyConnector extends Connector {
         }
     }
 
+    public PropertyModel[] selectCommuterProperties() {
+        Connection connection = this.manager.getConnection();
+        ArrayList<PropertyModel> models = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("select * from property P where not exists (select DISTINCT resource_id from public_resources where" +
+                    " resource_type = 1 or resource_type = 4 MINUS" +
+                    " (select DISTINCT resource_id from has_property_and_resources natural join public_resources where listing_id = P.listing_Id and (resource_type = 1 or resource_type = 4)))");
+
+            ResultSet resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+                String property_address = resultSet.getString(1);
+                PropertyModel propertyModel = this.manager.getPropertyConnector().getPropertyByAddress(property_address);
+                models.add(propertyModel);
+            }
+            ps.close();
+            return models.toArray(new PropertyModel[0]);
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
+        }
+    }
+
+
     public PropertyModel selectPropertybyListingID(int id) {
         Connection connection = this.manager.getConnection();
         try {
@@ -359,9 +383,8 @@ public class PropertyConnector extends Connector {
                 int capacity = resultSet.getInt(8);
 
                 ps.close();
-                PropertyModel propertyModel = new PropertyModel(property_address, dimension, postal_code, listing_id, is_duplex,
+                return new PropertyModel(property_address, dimension, postal_code, listing_id, is_duplex,
                         apartment_number, capacity, property_type);
-                return propertyModel;
             }
             lasterr = "There is no property with this property address";
             return null;

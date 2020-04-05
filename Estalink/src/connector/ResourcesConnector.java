@@ -85,21 +85,15 @@ public class ResourcesConnector extends Connector{
         }
     }
 
-    public ResourceModel[] selectResourceByProperty(PropertyModel property) {
+    public ResourceModel[] selectResourceByProperty(String address) {
         Connection connection = this.manager.getConnection();
         ArrayList<ResourceModel> resourceModels = new ArrayList<>();
         try {
-            String addr = property.getAddress();
-            System.out.println("Executing SELECT resource_id, resource_name," +
-                    "resource_type, transit_type, park_description, hospital_type FROM public_resources, " +
-                    "has_property_and_resources WHERE property_address = " + addr + " AND public_resources.resource_id = " +
-                    "has_property_and_resources.id");
             PreparedStatement ps = connection.prepareStatement("SELECT resource_id, resource_name," +
-                    "resource_type, transit_type, park_description, hospital_type FROM public_resources, " +
-                    "has_property_and_resources WHERE property_address = (?) AND public_resources.resource_id = " +
-                    "has_property_and_resources.id");
+                    "resource_type, transit_type, park_description, hospital_type FROM public_resources NATURAL JOIN " +
+                    "has_property_and_resources NATURAL JOIN LISTING NATURAL JOIN PROPERTY WHERE property_address = (?)");
 
-            ps.setString(1, addr);
+            ps.setString(1, address);
             ResultSet resultSet = ps.executeQuery();
 
             while (resultSet.next()) {

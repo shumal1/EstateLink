@@ -56,23 +56,26 @@ public class ResourceFrame extends JFrame implements ActionListener {
         // c.gridx = 2;
         // this.add(searchProperty, c);
 
-
         c.gridy = 2;
         c.gridx = 0;
+        JButton viewSelectedResource = new JButton("View Selected Resource for Commuters");
+        viewSelectedResource.addActionListener(this);
+        this.add(viewSelectedResource, c);
+
+        c.gridy = 3;
+        c.gridx = 0;
         c.weighty = 0.1;
-        c.anchor = GridBagConstraints.CENTER;
         JButton submit = new JButton("Submit");
         submit.addActionListener(this);
         this.add(submit, c);
 
-        c.gridy = 2;
         c.gridx = 1;
         c.anchor = GridBagConstraints.EAST;
         JButton mainMenu = new JButton("Menu");
         mainMenu.addActionListener(this);
         this.add(mainMenu, c);;
 
-        c.gridy = 3;
+        c.gridy = 4;
         c.gridx = 0;
         leftholder = new JScrollPane();
         this.add(leftholder, c);
@@ -91,10 +94,36 @@ public class ResourceFrame extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
+        JTable result;
         switch(actionEvent.getActionCommand()) {
             case "Menu":
                 this.setVisible(false);
                 parent.switchFrame(EstateUI.states.Menu.name());
+                break;
+            case "View Selected Resource for Commuters":
+                // this.searchProperty.setSelected(true);
+                result = handler.getCommuterProperties();
+                result.addMouseMotionListener(new MouseMotionListener() {
+                    int hoveredRow = -1, hoveredColumn = -1;
+                    @Override
+                    public void mouseMoved(MouseEvent e) {
+                        Point p = e.getPoint();
+                        hoveredRow = result.rowAtPoint(p);
+                        hoveredColumn = result.columnAtPoint(p);
+                        result.setRowSelectionInterval(hoveredRow, hoveredRow);
+                        reverseLookup(result.getValueAt(hoveredRow, 0).toString(), true);
+                        result.repaint();
+                    }
+                    @Override
+                    public void mouseDragged(MouseEvent e) {
+                        hoveredRow = hoveredColumn = -1;
+                        result.repaint();
+                    }
+                });
+                leftholder.getViewport().removeAll();
+                leftholder.getViewport().add(result);
+                leftholder.repaint();
+                this.pack();
                 break;
             case "Submit" :
                 // TODO SELECT RESOURCE OR PROPERTY BY TYPE
@@ -117,11 +146,10 @@ public class ResourceFrame extends JFrame implements ActionListener {
                     default:
                         break;
                 }
-                JTable result = new JTable(); // stub
                 // if (searchProperty.isSelected()){
                 //     result = handler.getPropertyByResourceType(type);
                 // } else {
-                    result = handler.getResourceByType(type);
+                result = handler.getResourceByType(type);
                 // }
                 leftholder.getViewport().removeAll();
                 leftholder.getViewport().add(result);
@@ -137,7 +165,7 @@ public class ResourceFrame extends JFrame implements ActionListener {
                         hoveredRow = finalResult.rowAtPoint(p);
                         hoveredColumn = finalResult.columnAtPoint(p);
                         finalResult.setRowSelectionInterval(hoveredRow, hoveredRow);
-                        reverseLookup(finalResult.getValueAt(hoveredRow, 0).toString());
+                        reverseLookup(finalResult.getValueAt(hoveredRow, 0).toString(), false);
                         finalResult.repaint();
                     }
                     @Override
@@ -150,18 +178,23 @@ public class ResourceFrame extends JFrame implements ActionListener {
         }
     }
 
-    private void reverseLookup(String key) {
+    private void reverseLookup(String key, boolean isPropertySearch) {
         // TODO REVERSE LOOKUP
         // Implement this
         if (!key.equals(currkey)) {
             currkey = key;
             JTable result;
-            // if (searchProperty.isSelected()){
-            //    result = this.handler.getResourceByProperty(key);
-            // } else {
-                int id = Integer.parseInt(key);
-                result = this.handler.getPropertyWithResourceID(id);
-            // }
+             if (isPropertySearch){
+                result = this.handler.getResourceByProperty(key);
+             } else {
+                try {
+                    int id = Integer.parseInt(key);
+                    result = this.handler.getPropertyWithResourceID(id);
+                } catch (NumberFormatException e) {
+                    // do nothing
+                    return;
+                }
+            }
             rightholder.getViewport().removeAll();
             rightholder.getViewport().add(result);
             rightholder.repaint();

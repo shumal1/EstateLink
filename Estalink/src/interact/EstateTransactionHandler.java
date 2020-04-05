@@ -217,12 +217,17 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
     public JTable getResourceByProperty(String address) {
         Model[] list;
         try{
-            PropertyModel propertyModel = manager.getPropertyConnector().getPropertyByAddress(address);
-            ResourceModel[] resourceModels = manager.getResourcesConnector().selectResourceByProperty(propertyModel);
-            list = resourceModels;
+            list = manager.getResourcesConnector().selectResourceByProperty(address);
         } catch (Exception e) {
             list = new Model[0];
         }
+        return constructTable(list);
+    }
+
+    @Override
+    public JTable getCommuterProperties() {
+        Model[] list;
+        list = manager.getPropertyConnector().selectCommuterProperties();
         return constructTable(list);
     }
 
@@ -247,6 +252,19 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
         } catch (Exception e) {
             list = new Model[0];
         }
+        return constructTable(list);
+    }
+
+    @Override
+    public JTable getListingStatistics() {
+        Model[] list;
+        list = new Model[]{manager.getListingConnector().getStatistics()};
+        return constructTable(list);
+    }
+
+    @Override
+    public JTable getListingStatisticsGroup() {
+        Model[] list = manager.getListingConnector().getGroupStatistics();
         return constructTable(list);
     }
 

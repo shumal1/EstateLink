@@ -1,8 +1,6 @@
 package connector;
 
-import model.ListingModel;
-import model.PropertyModel;
-import model.ResourceModel;
+import model.*;
 import types.AccountMode;
 import types.ListingType;
 import types.PropertyType;
@@ -307,6 +305,68 @@ public class ListingConnector extends Connector{
         }
     }
 
+    public StatisticsModel getStatistics(){
+        Connection connection = this.manager.getConnection();
+        try {
+            PreparedStatement ps = connection.prepareStatement("select count(*), min(listing_price), max(listing_price), sum(listing_price) from listing");
+            ResultSet resultSet = ps.executeQuery();
+            int count = 0;
+            int min = 0;
+            int max = 0;
+            int sum = 0;
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
+                min = resultSet.getInt(2);
+                max = resultSet.getInt(3);
+                sum = resultSet.getInt(4);
+            }
+
+            ps.close();
+
+            return new StatisticsModel(count, min, max, sum);
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
+        }
+    }
+
+    public GroupStatisticsModel[] getGroupStatistics(){
+        Connection connection = this.manager.getConnection();
+        ArrayList<GroupStatisticsModel> models = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("select listing_type, count(*), avg(listing_price), min(listing_price), max(listing_price) from listing group by listing_type");
+            ResultSet resultSet = ps.executeQuery();
+            String type = "";
+            ListingType listingType = ListingType.ANY;
+            int count = 0;
+            double avg = 0;
+            int min = 0;
+            int max = 0;
+            while (resultSet.next()) {
+                type = resultSet.getString(1);
+                count = resultSet.getInt(2);
+                avg = resultSet.getDouble(3);
+                min = resultSet.getInt(4);
+                max = resultSet.getInt(5);
+
+                if (type.equals("RENTAL")) {
+                    listingType = ListingType.RENTAL;
+                } else if (type.equals("SELLING")) {
+                    listingType = ListingType.SELLING;
+                }
+
+                models.add(new GroupStatisticsModel(listingType, count, avg, min, max));
+            }
+
+            ps.close();
+
+            return models.toArray(new GroupStatisticsModel[0]);
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
+        }
+    }
+
     private ListingModel getListingModel(ResultSet resultSet) throws  SQLException {
         int id = resultSet.getInt(1);
         int price = resultSet.getInt(2);
@@ -317,7 +377,6 @@ public class ListingConnector extends Connector{
         if (type.equals("RENTAL"))
             listingType = ListingType.RENTAL;
         return new ListingModel(id, price, historical_price, agent_id, listingType);
-
     }
 
     //Helper Method requested by Jason
