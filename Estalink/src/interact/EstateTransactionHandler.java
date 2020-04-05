@@ -92,6 +92,20 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
     }
 
     @Override
+    public JTable selectAllAgencyEmployee() {
+        Model[] list;
+        list = manager.getAgentConnector().getAllAgents();
+        return constructTable(list);
+    }
+
+    @Override
+    public JTable selectAllAgentListing() {
+        Model[] list;
+        list = manager.getAgentConnector().getAllAgentListings();
+        return constructTable(list);
+    }
+
+    @Override
     public String insertAgent(String agent_name, String agent_phoneNumber, String agent_agencyName) {
         AgentModel model = new AgentModel(this.getNextAgentID(), agent_name, agent_agencyName, agent_phoneNumber);
         if (manager.getAgentConnector().registerAgent(model)) {
@@ -172,19 +186,19 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
             ArrayList<Model> modelArray = new ArrayList<>(Arrays.asList(models));
             modelArray.removeAll(Collections.singleton(null));
             models = modelArray.toArray(new Model[0]);
+            if (models.length > 0) {
+                ArrayList<String[]> data = new ArrayList<String[]>();
+                for (Model model : models) {
+                    data.add(model.getData());
+                }
+                result = new JTable(data.toArray(new String[0][]), models[0].getFieldNames());
+                return result;
+            }
         }
 
-        if (models.length > 0) {
-            ArrayList<String[]> data = new ArrayList<String[]>();
-            for (Model model : models) {
-                data.add(model.getData());
-            }
-            result = new JTable(data.toArray(new String[0][]), models[0].getFieldNames());
-        } else {
-            String[] columnNames = {"Error"};
-            String[][] message = {{"No rows returned"}};
-            result = new JTable(message, columnNames);
-        }
+        String[] columnNames = {"Error"};
+        String[][] message = {{"No rows returned"}};
+        result = new JTable(message, columnNames);
         return result;
     }
 

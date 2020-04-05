@@ -1,8 +1,11 @@
 package connector;
 
+import model.AgencyEmployeeModel;
+import model.AgentListingModel;
 import types.AccountMode;
 import model.AgencyModel;
 import model.AgentModel;
+import types.ListingType;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -94,12 +97,40 @@ public class AgentConnector extends Connector{
         }
     }
 
-    public AgentModel[] getAllAgents() {
+    public AgencyEmployeeModel[] getAllAgents() {
         Connection connection = this.manager.getConnection();
-        ArrayList<AgentModel> models = new ArrayList<>();
+        ArrayList<AgencyEmployeeModel> models = new ArrayList<>();
         try {
-            System.out.println("Executing SELECT * FROM Agency_Employee");
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Agency_Employee");
+            System.out.println("Executing SELECT * FROM Agency_Employee natural join Agency");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Agency_Employee natural join Agency");
+
+            ResultSet resultSet = ps.executeQuery();
+            while (resultSet.next()) {
+                String agent_agencyName = resultSet.getString(1);
+                int agent_id = resultSet.getInt(2);
+                String agent_name = resultSet.getString(3);
+                String agent_phoneNumber = resultSet.getString(4);
+                String agency_address = resultSet.getString(5);
+                String agency_description = resultSet.getString(6);
+                double agency_rating = resultSet.getDouble(7);
+                models.add(new AgencyEmployeeModel(agent_agencyName, agent_id, agent_name, agent_phoneNumber,
+                        agency_address, agency_description, agency_rating));
+            }
+
+            ps.close();
+            return models.toArray(new AgencyEmployeeModel[0]);
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
+        }
+    }
+
+    public AgentListingModel[] getAllAgentListings() {
+        Connection connection = this.manager.getConnection();
+        ArrayList<AgentListingModel> models = new ArrayList<>();
+        try {
+            System.out.println("Executing SELECT * FROM Agency_Employee natural join Listing");
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM Agency_Employee natural join Listing");
 
             ResultSet resultSet = ps.executeQuery();
             while (resultSet.next()) {
@@ -107,11 +138,25 @@ public class AgentConnector extends Connector{
                 String agent_name = resultSet.getString(2);
                 String agent_agencyName = resultSet.getString(3);
                 String agent_phoneNumber = resultSet.getString(4);
-                models.add(new AgentModel(agent_id, agent_name, agent_agencyName, agent_phoneNumber));
+                int listing_id = resultSet.getInt(5);
+                int listing_price = resultSet.getInt(6);
+                int listing_histprice = resultSet.getInt(7);
+                String listing_typeID = resultSet.getString(8);
+                ListingType listing_type = ListingType.SELLING;
+                switch (listing_typeID) {
+                    case "SELL":
+                        listing_type = ListingType.SELLING;
+                        break;
+                    case "RENTAL":
+                        listing_type = ListingType.RENTAL;
+                        break;
+                }
+                models.add(new AgentListingModel(agent_id, agent_name, agent_agencyName, agent_phoneNumber,
+                        listing_id, listing_price, listing_histprice, listing_type));
             }
 
             ps.close();
-            return models.toArray(new AgentModel[0]);
+            return models.toArray(new AgentListingModel[0]);
         } catch (SQLException e) {
             lasterr = e.getMessage();
             return null;

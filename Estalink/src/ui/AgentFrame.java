@@ -12,10 +12,11 @@ public class AgentFrame extends JFrame implements ActionListener {
     private AgentTransactionHandler handler;
     private JPanel registerPanel;
     private AccountMode mode;
-    private JRadioButton select_agentID, select_agencyName, select_agencyByID;
+    private JRadioButton select_agentID, select_agencyName, select_agencyByID, select_all;
     private JTextField key, agentName, phoneNumber, agencyName;
     private JScrollPane holder;
     private EstateUI parent;
+    private JComboBox<String> joinTable;
 
     public AgentFrame(EstateUI parent, AgentTransactionHandler handler, AccountMode mode) {
         this.handler = handler;
@@ -31,7 +32,7 @@ public class AgentFrame extends JFrame implements ActionListener {
         // getAgencyByAgentID (returns name of agency for the specific agent)
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(null);
-        this.setSize(500,400);
+        this.setSize(1000,500);
 
         JButton registerAgent = new JButton("Register agent");
         registerAgent.setBounds(10, 20, 130, 25);
@@ -50,14 +51,24 @@ public class AgentFrame extends JFrame implements ActionListener {
         select_agencyName.setBounds(10, 90, 150, 25);
         select_agencyByID = new JRadioButton("Agency by ID");
         select_agencyByID.setBounds(10, 110, 150, 25);
+        select_all = new JRadioButton("Get All");
+        select_all.setBounds(10, 130, 80, 25);
+
+        String[] joinTables = {"Agency", "Listing"};
+        joinTable = new JComboBox<>(joinTables);
+        joinTable.setSelectedIndex(0);
+        joinTable.setBounds(100, 130, 150, 25);
+        this.add(joinTable);
 
         this.add(select_agentID);
         this.add(select_agencyName);
         this.add(select_agencyByID);
+        this.add(select_all);
         ButtonGroup g = new ButtonGroup();
         g.add(select_agentID);
         g.add(select_agencyName);
         g.add(select_agencyByID);
+        g.add(select_all);
         g.setSelected(select_agentID.getModel(), true);
 
         key = new JTextField();
@@ -98,9 +109,15 @@ public class AgentFrame extends JFrame implements ActionListener {
                     result = handler.selectAgencyByName(key.getText());
                 } else if (select_agencyByID.isSelected()) {
                     result = handler.selectAgencyByID(key.getText());
+                } else if (select_all.isSelected()) {
+                    if (joinTable.getSelectedItem() == "Agency") {
+                        result = handler.selectAllAgencyEmployee();
+                    } else {
+                        result = handler.selectAllAgentListing();
+                    }
                 }
                 holder = new JScrollPane(result);
-                holder.setBounds(10, 150, 400, 100);
+                holder.setBounds(10, 175, 1000, 300);
                 this.add(holder);
                 this.repaint();
                 break;
