@@ -200,7 +200,14 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
         return constructTable(list);
     }
 
-    public static int getCurrentAgentID() {
+    @Override
+    public JTable getResourceByProperty(String key) {
+        // TODO
+        return null;
+    }
+
+    @Override
+    public int getCurrentAgentID() {
         switch (manager.getCurrentMode()) {
             case ADMIN:
                 return 0;
