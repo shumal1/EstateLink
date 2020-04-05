@@ -25,7 +25,7 @@ CREATE TABLE agency
  grant select on agency to public;
 
 CREATE TABLE agency_employee
-	(agent_id INT,
+	(agent_id INTEGER,
 	agent_name VARCHAR(255),
 	agency_name VARCHAR(255),
 	agent_phone_number VARCHAR(255),
@@ -36,10 +36,10 @@ CREATE TABLE agency_employee
  grant select on agency_employee to public;
 
 CREATE TABLE listing
-	( listing_id INT,
-	listing_price INT,
-	historical_price INT,
-	agent_id INT,
+	( listing_id INTEGER,
+	listing_price INTEGER,
+	historical_price INTEGER,
+	agent_id INTEGER,
 	listing_type VARCHAR(10),
 	PRIMARY KEY (listing_id),
 	FOREIGN KEY (agent_id) REFERENCES agency_employee(agent_id)
@@ -58,27 +58,27 @@ grant select on community to public;
 
 CREATE TABLE property
 	(property_address VARCHAR(255),
-	listing_id INT NOT NULL,
+	listing_id INTEGER,
 	property_type VARCHAR(20),
 	dimension VARCHAR(255),
 	postal_code VARCHAR(20),
-	is_duplex INT,
-	apartment_number INT,
-	capacity INT,
+	is_duplex INTEGER,
+	apartment_number INTEGER,
+	capacity INTEGER,
 	PRIMARY KEY (property_address),
 	FOREIGN KEY (listing_id) REFERENCES listing (listing_id)
-		ON DELETE SET NULL 
+		ON DELETE CASCADE
 	);
 grant select on property to public;
 
  
 CREATE TABLE public_resources
-	(resource_id INT,
+	(resource_id INTEGER,
 	resource_name VARCHAR(255),
-	resource_type INT,
-	transit_type INT,
+	resource_type INTEGER,
+	transit_type INTEGER,
 	park_description VARCHAR(255),
-	hospital_type INT,
+	hospital_type INTEGER,
 	PRIMARY KEY (resource_id));
 grant select on public_resources to public;
 
@@ -114,12 +114,13 @@ CREATE TABLE property_in_community
 grant select on property_in_community to public;
 
 CREATE TABLE has_property_and_resources
-	(resource_id INT,
-	listing_id INT,
+	(resource_id INTEGER,
+	listing_id INTEGER,
 	PRIMARY KEY (resource_id, listing_id),
 	FOREIGN KEY (resource_id) REFERENCES public_resources(resource_id)
 		ON DELETE CASCADE,
 	FOREIGN KEY (listing_id) REFERENCES listing(listing_id)	
+		ON DELETE CASCADE
 	);
 grant select on has_property_and_resources to public;
 
@@ -143,7 +144,7 @@ VALUES('GreatAgain', '2095 W 41st Ave, Vancouver', 'Operating since 1978, The Gr
 
 
 INSERT INTO agency_employee
-VALUES(0, 'ADMIN', 'cs304', 31415926);
+VALUES(0, 'ADMIN', 'CS304', 31415926);
 
 INSERT INTO agency_employee
 VALUES(7, 'James Bond', 'Realtor', 0070070007);
