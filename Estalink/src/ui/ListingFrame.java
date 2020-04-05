@@ -112,8 +112,7 @@ public class ListingFrame extends JFrame implements ActionListener {
             case "Submit" :
                 // TODO USE HANDLER TO PERFORM SEARCH!
                 // Obtain result here
-                this.remove(leftHolder);
-                JTable result = new JTable(); // stub
+                JTable result; // stub
                 if (isListing) {
                     ListingType lType = ListingType.ANY;
                     switch (listingType.getSelectedItem().toString()){
@@ -144,28 +143,22 @@ public class ListingFrame extends JFrame implements ActionListener {
                     }
                     result = this.handler.getPropertyByCondition(addressField.getText(), pType);
                 }
-                leftHolder = new JScrollPane(result);
-                leftHolder.setBounds(10, 150, 400, 100);
-                this.add(leftHolder);
-                this.repaint();
-
-                JTable finalResult = result;
                 result.addMouseMotionListener(new MouseMotionListener() {
                     int hoveredRow = -1, hoveredColumn = -1;
                     @Override
                     public void mouseMoved(MouseEvent e) {
                         // Use functions in this.handler to do lookup
                         Point p = e.getPoint();
-                        hoveredRow = finalResult.rowAtPoint(p);
-                        hoveredColumn = finalResult.columnAtPoint(p);
-                        finalResult.setRowSelectionInterval(hoveredRow, hoveredRow);
-                        reverseLookup(finalResult.getValueAt(hoveredRow, 0).toString());
-                        finalResult.repaint();
+                        hoveredRow = result.rowAtPoint(p);
+                        hoveredColumn = result.columnAtPoint(p);
+                        result.setRowSelectionInterval(hoveredRow, hoveredRow);
+                        reverseLookup(result.getValueAt(hoveredRow, 0).toString());
+                        result.repaint();
                     }
                     @Override
                     public void mouseDragged(MouseEvent e) {
                         hoveredRow = hoveredColumn = -1;
-                        finalResult.repaint();
+                        result.repaint();
                     }
                 });
                 leftHolder.getViewport().removeAll();
@@ -185,7 +178,12 @@ public class ListingFrame extends JFrame implements ActionListener {
             currkey = key;
             if (isListing) {
                 // Use functions in this.handler to do lookup
-                result = this.handler.getPropertyByListing(Integer.parseInt(currkey));
+                try {
+                    result = this.handler.getPropertyByListing(Integer.parseInt(currkey));
+                } catch (NumberFormatException e) {
+                    // invalid format, don't reverse lookup
+                    return;
+                }
             } else {
                 result = this.handler.getListingByProperty(currkey);
 
@@ -203,6 +201,7 @@ public class ListingFrame extends JFrame implements ActionListener {
         listingPanel.setVisible(isListing);
         propertyPanel.setVisible(!isListing);
         this.repaint();
+        this.pack();
     }
 
     public void setupListingSearch(){

@@ -219,6 +219,7 @@ public class UpdateFrame extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         System.out.println(actionEvent.getActionCommand());
+        String response;
         switch(actionEvent.getActionCommand()) {
             case "comboBoxChanged" :
                 if (actionEvent.getSource() == operation) {
@@ -277,20 +278,23 @@ public class UpdateFrame extends JFrame implements ActionListener {
                                 break;
                         }
                         int agentID = handler.getCurrentAgentID();
-                        int listingID = EstateTransactionHandler.getNextListingID();
                         ListingType listing = ListingType.RENTAL;
-                        if (listingType.getSelectedItem().toString() == "SELL"){
+                        if (listingType.getSelectedItem().toString().equals("SELL")){
                             listing = ListingType.SELLING;
                         }
+                        response =
                         handler.insertPropertyListing(addressField.getText(), type,
-                                dimensionField.getText(), postalCodeField.getText(), duplex, apartmentNum, capacity,
-                                listingID, 0, listing, agentID);
+                                dimensionField.getText(), postalCodeField.getText(), duplex, apartmentNum, capacity, 0, listing, agentID);
+
+                        JOptionPane.showMessageDialog(this, response);
                         break;
                     case "DELETE":
-                        handler.deleteListing(Integer.parseInt(deleteID.getText()));
+                        response = handler.deleteListing(Integer.parseInt(deleteID.getText()));
+                        JOptionPane.showMessageDialog(this, response);
                         break;
                     case "UPDATE":
-                        handler.updateListing(Integer.parseInt(updateID.getText()), Integer.parseInt(priceField.getText()));
+                        response = handler.updateListing(Integer.parseInt(updateID.getText()), Integer.parseInt(priceField.getText()));
+                        JOptionPane.showMessageDialog(this, response);
                         break;
                 }
 

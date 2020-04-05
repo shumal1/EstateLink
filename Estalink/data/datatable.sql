@@ -123,6 +123,8 @@ CREATE TABLE has_property_and_resources
 	);
 grant select on has_property_and_resources to public;
 
+INSERT INTO agency
+VALUES('CS304', 'ICICS, UBC', 'Reason why we are doing this', 5);
 
 INSERT INTO agency
 VALUES('Realtor', '6335 Thunderbird Crescent, Vancouver', 'Find your next residential or commercial property with Canada largest real estate website', 4.3);
@@ -139,6 +141,9 @@ VALUES('BuildAWall', '3308 W Broadway, Vancouver', 'Looking to buy or sell a hom
 INSERT INTO agency
 VALUES('GreatAgain', '2095 W 41st Ave, Vancouver', 'Operating since 1978, The GreatAgain Real Estate Company Ltd is the number one real estate company in Vancouver.', 4.8);
 
+
+INSERT INTO agency_employee
+VALUES(0, 'ADMIN', 'cs304', 31415926);
 
 INSERT INTO agency_employee
 VALUES(7, 'James Bond', 'Realtor', 0070070007);

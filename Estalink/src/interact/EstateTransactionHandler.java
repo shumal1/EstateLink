@@ -16,9 +16,9 @@ import java.util.Collections;
 
 public class EstateTransactionHandler implements AgentTransactionHandler, ListingTransactionHandler, ResourceTransactionHandler {
     private static EstateDatabaseManager manager = EstateDatabaseManager.getInstance();
-    private static int nextListingID;
+    private int nextListingID;
     private int nextAgentID;
-    private static String currUID;
+    private String currUID;
 
     private static final String SUCCESS_RESPONSE  = "SQL_SUCCESS, requested update completed";
 
@@ -49,12 +49,14 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
         return manager.getCurrentMode();
     }
 
-    public static int getNextListingID(){
-        return nextListingID++;
+    public int getNextListingID(){
+        nextListingID++;
+        return nextListingID;
     }
 
     public int getNextAgentID() {
-        return nextAgentID++;
+        nextAgentID++;
+        return nextAgentID;
     }
 
     @Override
@@ -107,12 +109,24 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
     @Override
     public String insertPropertyListing(String property_address, PropertyType property_type, String property_dimension,
                                  String property_postalCode, boolean isDuplex, String property_apartmentNumber, int capacity,
-                                 int listing_id, int listing_price, ListingType listing_type, int agent_id) {
-        PropertyModel propertyModel = new PropertyModel(property_address, property_dimension, property_postalCode, listing_id
-        , isDuplex, Integer.parseInt(property_apartmentNumber), capacity, property_type);
+                                 int listing_price, ListingType listing_type, int agent_id) {
+        int apartmentNumber = 0;
+        try {
+            apartmentNumber = Integer.parseInt(property_apartmentNumber);
+        } catch (NumberFormatException e) {
+            if (property_type == PropertyType.Apartment) {
+                // otherwise ignore;
+                return "Invalid apartment number";
+            }
+        }
 
-        ListingModel listingModel = new ListingModel(listing_id, listing_price,0, agent_id, listing_type);
-        if (manager.getPropertyConnector().InsertProperty(propertyModel) && manager.getListingConnector().InsertListing(listingModel)) {
+        int listingID = this.getNextListingID();
+        PropertyModel propertyModel = new PropertyModel(property_address, property_dimension, property_postalCode, listingID,
+        isDuplex, apartmentNumber, capacity, property_type);
+
+        ListingModel listingModel = new ListingModel(listingID, listing_price,0, agent_id, listing_type);
+        // do not invert, listing is the parent table
+        if (manager.getListingConnector().InsertListing(listingModel) && manager.getPropertyConnector().InsertProperty(propertyModel)) {
             return SUCCESS_RESPONSE;
         }
         return manager.getListingConnector().getLastError() + " and " + manager.getPropertyConnector();

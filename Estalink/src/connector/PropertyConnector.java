@@ -15,10 +15,6 @@ public class PropertyConnector extends Connector {
 
     // Property
     public boolean InsertProperty(PropertyModel propertyModel) {
-        if (!checkMode(AccountMode.AGENT)) {
-            return false;
-        }
-
         Connection connection = this.manager.getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO property VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
@@ -32,7 +28,6 @@ public class PropertyConnector extends Connector {
             ps.setInt(8, propertyModel.getCapacity());
 
             ps.executeUpdate();
-            connection.commit();
             ps.close();
 
             return true;
@@ -46,8 +41,8 @@ public class PropertyConnector extends Connector {
         Connection connection = this.manager.getConnection();
         try {
             System.out.println("Executing SELECT * FROM property WHERE property_address = " + address);
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM property WHERE property_address = (?)");
-            ps.setString(1, address);
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM property WHERE property_address LIKE ?");
+            ps.setString(1, '%' + address + '%');
 
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
@@ -108,19 +103,14 @@ public class PropertyConnector extends Connector {
         }
     }
 
-    public boolean DeleteProperty(String address) {
-        // get address, and execute update instead of insert
-        if (!checkMode(AccountMode.AGENT)) {
-            return false;
-        }
+    public boolean deleteProperty(int id) {
         // DELETE FROM table_name WHERE condition;
         Connection connection = this.manager.getConnection();
         try {
-            PreparedStatement ps = connection.prepareStatement("DELETE FROM property WHERE property_address = (?)");
-            ps.setString(1, address);
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM property WHERE listing_id = (?)");
+            ps.setInt(1, id);
 
             ps.executeUpdate();
-            connection.commit();
             ps.close();
 
             return true;
