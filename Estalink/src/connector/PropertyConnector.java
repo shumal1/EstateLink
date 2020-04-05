@@ -24,7 +24,7 @@ public class PropertyConnector extends Connector {
             ps.setString(3, propertyModel.getType().toString());
             ps.setString(4, propertyModel.getDimension());
             ps.setString(5, propertyModel.getPostalCode());
-            ps.setBoolean(6, propertyModel.isDuplex());
+            ps.setInt(6, propertyModel.isDuplex() ? 1 : 0);
             ps.setInt(7, propertyModel.getApartmentNumber());
             ps.setInt(8, propertyModel.getCapacity());
 
@@ -53,7 +53,11 @@ public class PropertyConnector extends Connector {
                 PropertyType property_type = PropertyType.valueOf(resultSet.getString(3));
                 String dimension = resultSet.getString(4);
                 String postal_code = resultSet.getString(5);
-                Boolean is_duplex = resultSet.getBoolean(6);
+                boolean is_duplex = false;
+                if(resultSet.getInt(6) == 1) {
+                    is_duplex = true;
+                }
+
                 int apartment_number = resultSet.getInt(7);
                 int capacity = resultSet.getInt(8);
 
@@ -84,7 +88,7 @@ public class PropertyConnector extends Connector {
             ps.setString(1, propertyModel.getType().toString());
             ps.setString(2, propertyModel.getDimension());
             ps.setString(3, propertyModel.getPostalCode());
-            ps.setBoolean(4, propertyModel.isDuplex());
+            ps.setInt(4, propertyModel.isDuplex() ? 1 : 0);
             ps.setInt(5, propertyModel.getApartmentNumber());
             ps.setInt(6, propertyModel.getCapacity());
             ps.setString(7, propertyModel.getAddress());
@@ -122,6 +126,37 @@ public class PropertyConnector extends Connector {
         } catch (SQLException e) {
             lasterr = e.getMessage();
             return false;
+        }
+    }
+
+    public PropertyModel[] selectPropertybyPropertyType(PropertyType type) {
+        Connection connection = this.manager.getConnection();
+        try {
+            System.out.println("Executing SELECT property_address FROM property WHERE property_type = " + type);
+            PreparedStatement ps = connection.prepareStatement("SELECT property_address FROM property WHERE property_type = (?)");
+            ps.setString(1, type.toString());
+
+            ResultSet resultSet = ps.executeQuery();
+            int totalRowCount = 0;
+            if(resultSet.last()) {
+                totalRowCount = resultSet.getRow();
+                resultSet.beforeFirst();
+            }
+            PropertyModel[] propertyModels = new PropertyModel[totalRowCount];
+            while (resultSet.next()) {
+                String property_address = resultSet.getString(1);
+                PropertyModel propertyModel = this.manager.getPropertyConnector().getPropertyByAddress(property_address);
+                propertyModels[resultSet.getRow()] = propertyModel;
+            }
+            ps.close();
+            if(propertyModels.length != 0) {
+                return propertyModels;
+            }
+            lasterr = "There is no property with this property address";
+            return null;
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
         }
     }
 
