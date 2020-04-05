@@ -92,9 +92,9 @@ public class ResourcesConnector extends Connector{
         try {
             String addr = property.getAddress();
             System.out.println("Executing SELECT resource_id, resource_name," +
-                            "resource_type, transit_type, park_description, hospital_type FROM public_resources, " +
-                            "has_property_and_resources WHERE property_address = "+ addr +" AND public_resources.resource_id = " +
-                            "has_property_and_resources.id");
+                    "resource_type, transit_type, park_description, hospital_type FROM public_resources, " +
+                    "has_property_and_resources WHERE property_address = " + addr + " AND public_resources.resource_id = " +
+                    "has_property_and_resources.id");
             PreparedStatement ps = connection.prepareStatement("SELECT resource_id, resource_name," +
                     "resource_type, transit_type, park_description, hospital_type FROM public_resources, " +
                     "has_property_and_resources WHERE property_address = (?) AND public_resources.resource_id = " +
@@ -115,6 +115,7 @@ public class ResourcesConnector extends Connector{
             return null;
         }
     }
+
 
     public boolean updatePropertyResource(String address, int resource_id) {
         // INSERT not Update
