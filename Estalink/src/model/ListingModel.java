@@ -40,7 +40,7 @@ public class ListingModel implements Model{
 
     public String[] getData(){
         return new String[]{Integer.toString(listing_ID), Integer.toString(listing_Price),
-                Integer.toString(listing_HistPrice), Integer.toString(listing_HistPrice), listing_type.name()};
+                Integer.toString(listing_HistPrice), Integer.toString(listing_agentID), listing_type.name()};
     }
 
     public String[] getFieldNames(){

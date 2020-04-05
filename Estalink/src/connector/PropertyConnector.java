@@ -1,21 +1,20 @@
 package connector;
 
 import model.AgencyModel;
+import model.ListingModel;
 import model.PropertyModel;
+import model.ResourceModel;
 import types.AccountMode;
 import types.PropertyType;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class PropertyConnector extends Connector {
     // Insert, delete, update to Property, PropertyinCommunity, and Neighbour
 
     // Property
     public boolean InsertProperty(PropertyModel propertyModel) {
-        if (!checkMode(AccountMode.AGENT)) {
-            return false;
-        }
-
         Connection connection = this.manager.getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO property VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
@@ -29,7 +28,6 @@ public class PropertyConnector extends Connector {
             ps.setInt(8, propertyModel.getCapacity());
 
             ps.executeUpdate();
-            connection.commit();
             ps.close();
 
             return true;
@@ -43,8 +41,8 @@ public class PropertyConnector extends Connector {
         Connection connection = this.manager.getConnection();
         try {
             System.out.println("Executing SELECT * FROM property WHERE property_address = " + address);
-            PreparedStatement ps = connection.prepareStatement("SELECT * FROM property WHERE property_address = (?)");
-            ps.setString(1, address);
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM property WHERE property_address LIKE ?");
+            ps.setString(1, '%' + address + '%');
 
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
@@ -75,7 +73,6 @@ public class PropertyConnector extends Connector {
     }
 
     public boolean UpdatePropertyInfo(PropertyModel propertyModel) {
-        // TODO: Implement this
         // select old property by address and listing id, and do update.
         if (!checkMode(AccountMode.AGENT)) {
             return false;
@@ -106,20 +103,14 @@ public class PropertyConnector extends Connector {
         }
     }
 
-    public boolean DeleteProperty(String address) {
-        // TODO: Implement this
-        // get address, and execute update instead of insert
-        if (!checkMode(AccountMode.AGENT)) {
-            return false;
-        }
+    public boolean deleteProperty(int id) {
         // DELETE FROM table_name WHERE condition;
         Connection connection = this.manager.getConnection();
         try {
-            PreparedStatement ps = connection.prepareStatement("DELETE FROM property WHERE property_address = (?)");
-            ps.setString(1, address);
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM property WHERE listing_id = (?)");
+            ps.setInt(1, id);
 
             ps.executeUpdate();
-            connection.commit();
             ps.close();
 
             return true;
@@ -131,29 +122,28 @@ public class PropertyConnector extends Connector {
 
     public PropertyModel[] selectPropertybyPropertyType(PropertyType type) {
         Connection connection = this.manager.getConnection();
+        ArrayList<PropertyModel> models = new ArrayList<>();
         try {
-            System.out.println("Executing SELECT property_address FROM property WHERE property_type = " + type);
-            PreparedStatement ps = connection.prepareStatement("SELECT property_address FROM property WHERE property_type = (?)");
-            ps.setString(1, type.toString());
+            PreparedStatement ps;
+            if (type == PropertyType.ANY) {
+                ps = connection.prepareStatement("SELECT property_address FROM property");
+            } else {
+
+                System.out.println("Executing SELECT property_address FROM property WHERE property_type = " + type);
+                ps = connection.prepareStatement("SELECT property_address FROM property WHERE property_type = (?)");
+
+                ps.setString(1, type.name());
+            }
 
             ResultSet resultSet = ps.executeQuery();
-            int totalRowCount = 0;
-            if(resultSet.last()) {
-                totalRowCount = resultSet.getRow();
-                resultSet.beforeFirst();
-            }
-            PropertyModel[] propertyModels = new PropertyModel[totalRowCount];
+
             while (resultSet.next()) {
                 String property_address = resultSet.getString(1);
                 PropertyModel propertyModel = this.manager.getPropertyConnector().getPropertyByAddress(property_address);
-                propertyModels[resultSet.getRow()] = propertyModel;
+                models.add(propertyModel);
             }
             ps.close();
-            if(propertyModels.length != 0) {
-                return propertyModels;
-            }
-            lasterr = "There is no property with this property address";
-            return null;
+            return models.toArray(new PropertyModel[0]);
         } catch (SQLException e) {
             lasterr = e.getMessage();
             return null;
@@ -343,6 +333,64 @@ public class PropertyConnector extends Connector {
         } catch (SQLException e) {
             lasterr = e.getMessage();
             return false;
+        }
+    }
+
+    public PropertyModel[] selectCommuterProperties() {
+        Connection connection = this.manager.getConnection();
+        ArrayList<PropertyModel> models = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("select * from property P where not exists (select DISTINCT resource_id from public_resources where" +
+                    " resource_type = 1 or resource_type = 4 MINUS" +
+                    " (select DISTINCT resource_id from has_property_and_resources natural join public_resources where listing_id = P.listing_Id and (resource_type = 1 or resource_type = 4)))");
+
+            ResultSet resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+                String property_address = resultSet.getString(1);
+                PropertyModel propertyModel = this.manager.getPropertyConnector().getPropertyByAddress(property_address);
+                models.add(propertyModel);
+            }
+            ps.close();
+            return models.toArray(new PropertyModel[0]);
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
+        }
+    }
+
+
+    public PropertyModel selectPropertybyListingID(int id) {
+        Connection connection = this.manager.getConnection();
+        try {
+            System.out.println("Executing SELECT * FROM property WHERE listing_id = " + id);
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM property WHERE listing_id = (?)");
+            ps.setInt(1, id);
+
+            ResultSet resultSet = ps.executeQuery();
+            if (resultSet.next()) {
+                String property_address = resultSet.getString(1);
+                int listing_id = resultSet.getInt(2);
+                PropertyType property_type = PropertyType.valueOf(resultSet.getString(3));
+                String dimension = resultSet.getString(4);
+                String postal_code = resultSet.getString(5);
+                boolean is_duplex = false;
+                if(resultSet.getInt(6) == 1) {
+                    is_duplex = true;
+                }
+
+                int apartment_number = resultSet.getInt(7);
+                int capacity = resultSet.getInt(8);
+
+                ps.close();
+                return new PropertyModel(property_address, dimension, postal_code, listing_id, is_duplex,
+                        apartment_number, capacity, property_type);
+            }
+            lasterr = "There is no property with this property address";
+            return null;
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
         }
     }
 }

@@ -1,23 +1,22 @@
 package connector;
 
-import model.ListingModel;
+import model.*;
 import types.AccountMode;
 import types.ListingType;
+import types.PropertyType;
 
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ListingConnector extends Connector{
     // Insert, update, delete on Listing
 
     public boolean InsertListing(ListingModel listingModel) {
-        // call addManagementForProperty() here
-        if (!checkMode(AccountMode.AGENT)) {
-            return false;
-        }
-
         Connection connection = this.manager.getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO Listing VALUES (?, ?, ?, ?, ?)");
@@ -28,7 +27,6 @@ public class ListingConnector extends Connector{
             ps.setString(5, listingModel.getListingType().toString());
 
             ps.executeUpdate();
-            connection.commit();
             ps.close();
 
             return true;
@@ -39,12 +37,9 @@ public class ListingConnector extends Connector{
     }
 
     public boolean UpdateListingPrice(int listing_id, int newPrice) {
-        if (!checkMode(AccountMode.AGENT)) {
-            return false;
-        }
         Connection connection = this.manager.getConnection();
         try {
-            PreparedStatement ps1 = connection.prepareStatement("SELECT listing_price FROM Lisinting WHERE listing_id = (?)");
+            PreparedStatement ps1 = connection.prepareStatement("SELECT listing_price FROM listing WHERE listing_id = (?)");
             ps1.setInt(1, listing_id);
             ResultSet resultSet = ps1.executeQuery();
             int currentPrice = 0;
@@ -59,7 +54,6 @@ public class ListingConnector extends Connector{
             ps2.setInt(3, listing_id);
 
             ps2.executeUpdate();
-            connection.commit();
             ps2.close();
 
             return true;
@@ -82,7 +76,6 @@ public class ListingConnector extends Connector{
             ps.setInt(2, listing_id);
 
             ps.executeUpdate();
-            connection.commit();
             ps.close();
 
             return true;
@@ -94,23 +87,45 @@ public class ListingConnector extends Connector{
 
 
     public boolean deleteListing(int listing_id) {
-        if (!checkMode(AccountMode.AGENT)) {
-            return false;
-        }
-        // DELETE FROM table_name WHERE condition;
         Connection connection = this.manager.getConnection();
         try {
             PreparedStatement ps = connection.prepareStatement("DELETE FROM Listing WHERE listing_id = (?)");
             ps.setInt(1, listing_id);
 
             ps.executeUpdate();
-            connection.commit();
             ps.close();
 
             return true;
         } catch (SQLException e) {
             lasterr = e.getMessage();
             return false;
+        }
+    }
+
+    public ListingModel getListingByID(int id){
+        Connection connection = this.manager.getConnection();
+        try {
+            System.out.println("Executing SELECT * FROM listing WHERE listing_id = " + id);
+            PreparedStatement ps = connection.prepareStatement("SELECT * FROM listing WHERE listing_id = (?)");
+            ps.setInt(1, id);
+
+            ResultSet resultSet = ps.executeQuery();
+            if (resultSet.next()) {
+                int listing_id = resultSet.getInt(1);
+                int listing_price = resultSet.getInt(2);
+                int listing_histprice = resultSet.getInt(3);
+                int agent_id = resultSet.getInt(4);
+                ListingType type = ListingType.valueOf(resultSet.getString(5));
+
+                ps.close();
+                ListingModel listingModel = new ListingModel(listing_id, listing_price, listing_histprice, agent_id, type);
+                return listingModel;
+            }
+            lasterr = "There is no listing with this id";
+            return null;
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
         }
     }
 
@@ -129,7 +144,7 @@ public class ListingConnector extends Connector{
 
             int i = 0;
             while (resultSet.next()) {
-                listingModels[i] = getListingModel(ps, resultSet);
+                listingModels[i] = getListingModel(resultSet);
                 i++;
             }
 
@@ -138,7 +153,6 @@ public class ListingConnector extends Connector{
             lasterr = e.getMessage();
             return null;
         }
-
     }
 
     public ListingModel[] getListingByPrice(ListingType type, int price) {
@@ -153,7 +167,7 @@ public class ListingConnector extends Connector{
 
             int i = 0;
             while (resultSet.next()) {
-                listingModels[i] = getListingModel(ps, resultSet);
+                listingModels[i] = getListingModel(resultSet);
                 i++;
             }
 
@@ -182,7 +196,7 @@ public class ListingConnector extends Connector{
 
             int i = 0;
             while (resultSet.next()) {
-                listingModels[i] = getListingModel(ps, resultSet);
+                listingModels[i] = getListingModel(resultSet);
                 i++;
             }
             return listingModels;
@@ -193,25 +207,184 @@ public class ListingConnector extends Connector{
         }
     }
 
-    private ListingModel getListingModel(PreparedStatement ps, ResultSet resultSet) throws  SQLException {
+    public ListingModel selectListingByProperty(String property_address) {
+        Connection connection = this.manager.getConnection();
+        try {
+            System.out.println("Executing SELECT listing_id, listing_price, historical_price, agent_id, listing_type FROM listing JOIN property WHERE property_address = " + property_address);
+            PreparedStatement ps = connection.prepareStatement("SELECT listing_id, listing_price, historical_price, agent_id, listing_type FROM listing NATURAL JOIN property WHERE property_address = ?");
+            ps.setString(1, property_address);
+
+            ResultSet resultSet = ps.executeQuery();
+            if (resultSet.next()) {
+                int listing_id = resultSet.getInt(1);
+                int listing_price = resultSet.getInt(2);
+                int listing_histprice = resultSet.getInt(3);
+                int agent_id = resultSet.getInt(4);
+                ListingType type = ListingType.valueOf(resultSet.getString(5));
+
+                ps.close();
+                ListingModel listingModel = new ListingModel(listing_id, listing_price, listing_histprice, agent_id, type);
+                return listingModel;
+            }
+            lasterr = "There is no listing with this id";
+            return null;
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
+        }
+    }
+
+    public ListingModel[] selectListingByCondition(String id, String price, boolean higher, ListingType type) {
+        Connection connection = this.manager.getConnection();
+        ArrayList<ListingModel> models = new ArrayList<>();
+        try {
+            String typeCondition = "";
+            if (type != ListingType.ANY)
+                typeCondition = "AND listing_type = '" + type.toString() + "'";
+            PreparedStatement ps;
+            if (!id.equals("") && !price.equals("")) {
+                if (higher) {
+                    ps = connection.prepareStatement("SELECT * FROM listing WHERE listing_id = ? AND listing_price > ? " + typeCondition);
+                } else {
+                    ps = connection.prepareStatement("SELECT * FROM listing WHERE listing_id = ? AND listing_price < ? " + typeCondition);
+                }
+                ps.setInt(1, Integer.parseInt(id));
+                ps.setInt(2, Integer.parseInt(price));
+            } else if (!id.equals("")) {
+                ps  = connection.prepareStatement("SELECT * FROM listing WHERE listing_id = ?" + typeCondition);
+                ps.setInt(1, Integer.parseInt(id));
+            } else if (!price.equals("")){
+                if (higher) {
+                    ps = connection.prepareStatement("SELECT * FROM listing WHERE listing_price > ? " + typeCondition);
+                } else {
+                    ps = connection.prepareStatement("SELECT * FROM listing WHERE listing_price < ? " + typeCondition);
+                }
+                ps.setInt(1, Integer.parseInt(price));
+            } else {
+                ps  = connection.prepareStatement("SELECT * FROM listing " + typeCondition);
+            }
+
+            ResultSet resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+                int listing_id = resultSet.getInt(1);
+                int listing_price = resultSet.getInt(2);
+                int listing_histprice = resultSet.getInt(3);
+                int agentID = resultSet.getInt(4);
+                ListingType listing_type = ListingType.valueOf(resultSet.getString(5));
+
+                ListingModel listingModel = new ListingModel(listing_id, listing_price, listing_histprice, agentID, listing_type);
+                models.add(listingModel);
+            }
+            ps.close();
+            return models.toArray(new ListingModel[0]);
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
+        }
+    }
+
+    public ListingModel[] selectListingByResource(int id) {
+        Connection connection = this.manager.getConnection();
+        ArrayList<ListingModel> models = new ArrayList<>();
+
+        try {
+            System.out.println("Executing select * from listing where listing_id in (select listing_id from has_property_and_resources where resource_id  = " + id);
+            PreparedStatement ps = connection.prepareStatement("select * from listing where listing_id in (select listing_id from has_property_and_resources where resource_id = (?))");
+            ps.setInt(1, id);
+            ResultSet resultSet = ps.executeQuery();
+
+            while (resultSet.next()) {
+                models.add(getListingModel(resultSet));
+            }
+
+            return models.toArray(new ListingModel[0]);
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
+        }
+    }
+
+    public StatisticsModel getStatistics(){
+        Connection connection = this.manager.getConnection();
+        try {
+            PreparedStatement ps = connection.prepareStatement("select count(*), min(listing_price), max(listing_price), sum(listing_price) from listing");
+            ResultSet resultSet = ps.executeQuery();
+            int count = 0;
+            int min = 0;
+            int max = 0;
+            int sum = 0;
+            if (resultSet.next()) {
+                count = resultSet.getInt(1);
+                min = resultSet.getInt(2);
+                max = resultSet.getInt(3);
+                sum = resultSet.getInt(4);
+            }
+
+            ps.close();
+
+            return new StatisticsModel(count, min, max, sum);
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
+        }
+    }
+
+    public GroupStatisticsModel[] getGroupStatistics(){
+        Connection connection = this.manager.getConnection();
+        ArrayList<GroupStatisticsModel> models = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement("select listing_type, count(*), avg(listing_price), min(listing_price), max(listing_price) from listing group by listing_type");
+            ResultSet resultSet = ps.executeQuery();
+            String type = "";
+            ListingType listingType = ListingType.ANY;
+            int count = 0;
+            double avg = 0;
+            int min = 0;
+            int max = 0;
+            while (resultSet.next()) {
+                type = resultSet.getString(1);
+                count = resultSet.getInt(2);
+                avg = resultSet.getDouble(3);
+                min = resultSet.getInt(4);
+                max = resultSet.getInt(5);
+
+                if (type.equals("RENTAL")) {
+                    listingType = ListingType.RENTAL;
+                } else if (type.equals("SELLING")) {
+                    listingType = ListingType.SELLING;
+                }
+
+                models.add(new GroupStatisticsModel(listingType, count, avg, min, max));
+            }
+
+            ps.close();
+
+            return models.toArray(new GroupStatisticsModel[0]);
+        } catch (SQLException e) {
+            lasterr = e.getMessage();
+            return null;
+        }
+    }
+
+    private ListingModel getListingModel(ResultSet resultSet) throws  SQLException {
         int id = resultSet.getInt(1);
         int price = resultSet.getInt(2);
         int historical_price = resultSet.getInt(3);
         int agent_id = resultSet.getInt(4);
         String type = resultSet.getString(5);
         ListingType listingType = ListingType.SELLING;
-        if (type == "RENTAL")
+        if (type.equals("RENTAL"))
             listingType = ListingType.RENTAL;
         return new ListingModel(id, price, historical_price, agent_id, listingType);
-
     }
 
     //Helper Method requested by Jason
     public int getNextListingID() {
         Connection connection = this.manager.getConnection();
         try {
-            System.out.println("Executing SELECT MAX(listing_id) FROM Listings");
-            PreparedStatement ps = connection.prepareStatement("SELECT MAX(listing_id) FROM Listings");
+            System.out.println("Executing SELECT MAX(listing_id) FROM Listing");
+            PreparedStatement ps = connection.prepareStatement("SELECT MAX(listing_id) FROM Listing");
 
             ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {

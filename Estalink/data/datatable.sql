@@ -1,13 +1,18 @@
-DROP TABLE agency_employee;
-DROP TABLE agency;
-DROP TABLE listing;
-DROP TABLE community;
+DROP TABLE has_property_and_resources;
+DROP TABLE property_in_community;
+DROP TABLE neighbour;
+DROP TABLE property_management;
 DROP TABLE property;
 DROP TABLE public_resources;
-DROP TABLE property_management;
-DROP TABLE neighbour;
-DROP TABLE property_in_community;
-DROP TABLE has_property_and_resources;
+DROP TABLE listing;
+DROP TABLE community;
+DROP TABLE agency_employee;
+DROP TABLE agency;
+
+
+
+
+
 
 
 CREATE TABLE agency
@@ -28,7 +33,7 @@ CREATE TABLE agency_employee
 	FOREIGN KEY (agency_name) REFERENCES agency(agency_name)
 		ON DELETE CASCADE
 	);
- grant agency_employee to public;
+ grant select on agency_employee to public;
 
 CREATE TABLE listing
 	( listing_id INT,
@@ -118,6 +123,8 @@ CREATE TABLE has_property_and_resources
 	);
 grant select on has_property_and_resources to public;
 
+INSERT INTO agency
+VALUES('CS304', 'ICICS, UBC', 'Reason why we are doing this', 5);
 
 INSERT INTO agency
 VALUES('Realtor', '6335 Thunderbird Crescent, Vancouver', 'Find your next residential or commercial property with Canada largest real estate website', 4.3);
@@ -136,6 +143,9 @@ VALUES('GreatAgain', '2095 W 41st Ave, Vancouver', 'Operating since 1978, The Gr
 
 
 INSERT INTO agency_employee
+VALUES(0, 'ADMIN', 'cs304', 31415926);
+
+INSERT INTO agency_employee
 VALUES(7, 'James Bond', 'Realtor', 0070070007);
  
 INSERT INTO agency_employee
@@ -151,22 +161,22 @@ INSERT INTO agency_employee
 VALUES(4, 'Ben liu', 'GreatAgain', 6042258275);
 
 INSERT INTO listing
-VALUES(1, 400000, 3500000, 1, 'SELL');
+VALUES(1, 400000, 3500000, 1, 'SELLING');
 
 INSERT INTO listing
-VALUES(2, 1200, null, 1, 'RENT');
+VALUES(2, 1200, null, 1, 'RENTAL');
 
 INSERT INTO listing
-VALUES(3, 1000, null, 3, 'RENT');
+VALUES(3, 1000, null, 3, 'RENTAL');
 
 INSERT INTO listing
-VALUES(4, 2500, 2300, 7, 'RENT');
+VALUES(4, 2500, 2300, 7, 'RENTAL');
 
 INSERT INTO listing
-VALUES(5, 1200000, 900000, 2, 'SELL');
+VALUES(5, 1200000, 900000, 2, 'SELLING');
 
 INSERT INTO listing
-VALUES(6, 800000, 700000, 4, 'SELL');
+VALUES(6, 800000, 700000, 4, 'SELLING');
 
 INSERT INTO community
 VALUES('Kerrisdale', 20000, 'Vancouver');
@@ -206,19 +216,19 @@ INSERT INTO neighbour
 VALUES ('5025 Yew Street, Vancouver', '5020 Yew Street, Vancouver');
 
 INSERT INTO public_resources
-VALUES (1, 'R4');
+VALUES (1, 'R4', 1, 3, null, 0);
 
 INSERT INTO public_resources
-VALUES (2, 'Deer Lake Park');
+VALUES (2, 'Deer Lake Park', 2, 0, 'Welcome to Deer Lake Park', 0);
 
 INSERT INTO public_resources
-VALUES (3, 'Canada Line');
+VALUES (3, 'Canada Line', 4, 0, null, 0);
 
 INSERT INTO public_resources
-VALUES (4, 'Vancouver General Hospital');
+VALUES (4, 'Vancouver General Hospital', 3, 0, null, 2);
 
 INSERT INTO public_resources
-VALUES (5, 'Arbutus Greenway', );
+VALUES (5, 'Arbutus Greenway', 5, 0, null, 0);
 
 INSERT INTO property_in_community
 VALUES ('6218 King Edward, Vancouver', 'Wellingdon', 'Burnaby');

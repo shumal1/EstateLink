@@ -50,11 +50,13 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
     }
 
     public int getNextListingID(){
-        return nextListingID++;
+        nextListingID++;
+        return nextListingID;
     }
 
     public int getNextAgentID() {
-        return nextAgentID++;
+        nextAgentID++;
+        return nextAgentID;
     }
 
     @Override
@@ -116,49 +118,168 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
 
     }
 
-    // TODO Implement methods here for usage in UI, feel free to update if needed.
+    // note that admin has an agent id of 0.
+    // in ui, call getCurrentAgentID() to get the id.
     @Override
     public String insertPropertyListing(String property_address, PropertyType property_type, String property_dimension,
                                  String property_postalCode, boolean isDuplex, String property_apartmentNumber, int capacity,
-                                 int listing_id, int listing_price, ListingType listing_type, int agent_id) {
-        // note that admin has an agent id of 0.
-        // in ui, call getCurrentAgentID() to get the id.
-        return null;
+                                 int listing_price, ListingType listing_type, int agent_id) {
+        int apartmentNumber = 0;
+        try {
+            apartmentNumber = Integer.parseInt(property_apartmentNumber);
+        } catch (NumberFormatException e) {
+            if (property_type == PropertyType.Apartment) {
+                // otherwise ignore;
+                return "Invalid apartment number";
+            }
+        }
+
+        int listingID = this.getNextListingID();
+        PropertyModel propertyModel = new PropertyModel(property_address, property_dimension, property_postalCode, listingID,
+        isDuplex, apartmentNumber, capacity, property_type);
+
+        ListingModel listingModel = new ListingModel(listingID, listing_price,0, agent_id, listing_type);
+        // do not invert, listing is the parent table
+        if (manager.getListingConnector().InsertListing(listingModel) && manager.getPropertyConnector().InsertProperty(propertyModel)) {
+            return SUCCESS_RESPONSE;
+        }
+        return manager.getListingConnector().getLastError() + " and " + manager.getPropertyConnector();
     }
 
     @Override
     public String updateListing(int listing_id, int new_price) {
-        return null;
+        if(manager.getListingConnector().UpdateListingPrice(listing_id, new_price)) {
+            return SUCCESS_RESPONSE;
+        }
+        return manager.getListingConnector().getLastError();
     }
 
     @Override
-    public boolean deleteListing(int listing_id) {
-        return false;
+    public String deleteListing(int listing_id) {
+        if(manager.getListingConnector().deleteListing(listing_id)) {
+            return SUCCESS_RESPONSE;
+        }
+        return manager.getListingConnector().getLastError();
     }
 
     @Override
-    public JTable getListingByCondition(int id, int price, boolean higher, ListingType type) {
-        return null;
+    public JTable getListingByCondition(String id, String price, boolean higher, ListingType type) {
+        Model[] list;
+        try {
+            ListingModel[] listingModels = manager.getListingConnector().selectListingByCondition(id, price, higher, type);
+            list = listingModels;
+        } catch (Exception e) {
+            list = new Model[0];
+        }
+
+        return constructTable(list);
     }
 
     @Override
     public JTable getPropertyByCondition(String address, PropertyType type) {
-        return null;
+        Model[] list;
+        if (address != null && !address.isEmpty()) {
+            list = new Model[]{manager.getPropertyConnector().getPropertyByAddress(address)};
+        } else {
+            try{
+                PropertyModel[] properties = manager.getPropertyConnector().selectPropertybyPropertyType(type);
+                list = properties;
+            } catch (Exception e){
+                list = new Model[0];
+            }
+        }
+        return constructTable(list);
     }
 
     @Override
     public JTable getResourceByType(ResourceType type) {
-        return null;
+        Model[] list;
+        try{
+            ResourceModel[] resources = manager.getResourcesConnector().selectResourceByType(type);
+            list =  resources;
+        } catch (Exception e) {
+            list = new Model[0];
+        }
+        return constructTable(list);
     }
 
     @Override
     public JTable getPropertyByResourceType(ResourceType type) {
-        return null;
+        Model[] list;
+        try{
+            ResourceModel[] resources = manager.getResourcesConnector().selectResourceByType(type);
+            list = resources;
+        } catch (Exception e) {
+            list = new Model[0];
+        }
+        return constructTable(list);
     }
 
     @Override
     public JTable getPropertyWithResourceID(int id) {
-        return null;
+        Model[] list;
+        try{
+            ListingModel[] propertyModels = manager.getListingConnector().selectListingByResource(id);
+            list = propertyModels;
+        } catch (Exception e) {
+            list = new Model[0];
+        }
+        return constructTable(list);
+    }
+
+    @Override
+    public JTable getResourceByProperty(String address) {
+        Model[] list;
+        try{
+            list = manager.getResourcesConnector().selectResourceByProperty(address);
+        } catch (Exception e) {
+            list = new Model[0];
+        }
+        return constructTable(list);
+    }
+
+    @Override
+    public JTable getCommuterProperties() {
+        Model[] list;
+        list = manager.getPropertyConnector().selectCommuterProperties();
+        return constructTable(list);
+    }
+
+    @Override
+    public JTable getPropertyByListing(int id) {
+        Model[] list;
+        try{
+            PropertyModel propertyModel = manager.getPropertyConnector().selectPropertybyListingID(id);
+            list = new Model[]{propertyModel};;
+        } catch (Exception e) {
+            list = new Model[0];
+        }
+        return constructTable(list);
+    }
+
+    @Override
+    public JTable getListingByProperty(String address) {
+        Model[] list;
+        try{
+            ListingModel listingModel = manager.getListingConnector().selectListingByProperty(address);
+            list = new Model[]{listingModel};;
+        } catch (Exception e) {
+            list = new Model[0];
+        }
+        return constructTable(list);
+    }
+
+    @Override
+    public JTable getListingStatistics() {
+        Model[] list;
+        list = new Model[]{manager.getListingConnector().getStatistics()};
+        return constructTable(list);
+    }
+
+    @Override
+    public JTable getListingStatisticsGroup() {
+        Model[] list = manager.getListingConnector().getGroupStatistics();
+        return constructTable(list);
     }
 
     @Override
@@ -177,7 +298,6 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
                 return -1;
         }
     }
-
 
     // IMPORTANT! USE THIS HELPER TO RETURN JTABLE
     private JTable constructTable(Model[] models) {

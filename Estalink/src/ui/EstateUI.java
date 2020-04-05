@@ -59,11 +59,13 @@ public class EstateUI implements ActionListener {
             Icon listingIcon = new ImageIcon("resources/home.png");
             Icon resourceIcon = new ImageIcon("resources/park.png");
             Icon agentIcon = new ImageIcon("resources/agent.png");
+
             updateView.setIcon(updateIcon);
             listingView.setIcon(listingIcon);
             resourceView.setIcon(resourceIcon);
             agentView.setIcon(agentIcon);
         } catch (Exception e) {
+            System.out.println(e.getMessage() + " I AM HERE");
             // silently ignore, don't add icon
             System.out.println(e.getMessage());
         }
@@ -82,6 +84,9 @@ public class EstateUI implements ActionListener {
         gb.setConstraints(listingView, c);
         c.gridx = 3;
         gb.setConstraints(agentView, c);
+
+        c.gridy =  7;
+
 
         mainMenu.add(updateView);
         if (mode == AccountMode.GUEST) {

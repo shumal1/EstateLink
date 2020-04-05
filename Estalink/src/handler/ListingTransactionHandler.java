@@ -21,13 +21,17 @@ public interface ListingTransactionHandler extends TransactionHandler {
 
     String insertPropertyListing(String property_address, PropertyType property_type, String property_dimension,
                                  String property_postalCode, boolean isDuplex, String property_apartmentNumber, int capacity,
-                                 int listing_id, int listing_price, ListingType listing_type, int agent_id);
+                                 int listing_price, ListingType listing_type, int agent_id);
     String updateListing(int listing_id, int new_price);
-    boolean deleteListing(int listing_id);
+    String deleteListing(int listing_id);
 
     // note that this one should use LIKE %address% to perform match, so empty string is treated as wildcard
-    JTable getListingByCondition(int id, int price, boolean higher, ListingType type);
+    JTable getListingByCondition(String id, String price, boolean higher, ListingType type);
     // ListingModel[] getListingByPercentageChange(double percentage, boolean higher);
 
     JTable getPropertyByCondition(String address, PropertyType type);
+    JTable getPropertyByListing(int id);
+    JTable getListingByProperty(String address);
+    JTable getListingStatistics();
+    JTable getListingStatisticsGroup();
 }

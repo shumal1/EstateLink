@@ -4,7 +4,7 @@ import types.BusType;
 import types.HospitalType;
 import types.ResourceType;
 
-public class ResourceModel {
+public class ResourceModel implements Model {
     private int resource_ID;
     private String resource_name;
     private ResourceType resource_type;

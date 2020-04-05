@@ -9,4 +9,5 @@ public interface AgentTransactionHandler extends TransactionHandler{
     JTable selectAllAgencyEmployee();
     JTable selectAllAgentListing();
     String insertAgent(String agent_name, String agent_phoneNumber, String agent_agencyName);
+
 }

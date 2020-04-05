@@ -3,6 +3,8 @@ package ui;
 import handler.AgentTransactionHandler;
 import handler.ListingTransactionHandler;
 import types.AccountMode;
+import types.ListingType;
+import types.PropertyType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -68,6 +70,11 @@ public class ListingFrame extends JFrame implements ActionListener {
         submit.addActionListener(this);
         gb.setConstraints(submit, c);
 
+        c.gridx = 1;
+        JButton statistics = new JButton("Show Statistics");
+        gb.setConstraints(statistics,c);
+        statistics.addActionListener(this);
+
         leftHolder = new JScrollPane();
         c.gridy = 4;
         c.gridx = 0;
@@ -82,6 +89,7 @@ public class ListingFrame extends JFrame implements ActionListener {
         this.add(propertyPanel);
         this.add(leftHolder);
         this.add(rightHolder);
+        this.add(statistics);
 
         this.add(submit);
         propertyPanel.setVisible(false);
@@ -107,10 +115,53 @@ public class ListingFrame extends JFrame implements ActionListener {
                 this.setVisible(false);
                 parent.switchFrame(EstateUI.states.Menu.name());
                 break;
+            case "Show Statistics":
+                JTable statResult;
+                statResult = this.handler.getListingStatistics();
+                leftHolder.getViewport().removeAll();
+                leftHolder.getViewport().add(statResult);
+                leftHolder.repaint();
+
+                statResult = this.handler.getListingStatisticsGroup();
+                rightHolder.getViewport().removeAll();
+                rightHolder.getViewport().add(statResult);
+                rightHolder.repaint();
+                this.pack();
+                break;
             case "Submit" :
                 // TODO USE HANDLER TO PERFORM SEARCH!
                 // Obtain result here
-                JTable result = null; // stub
+                JTable result; // stub
+                if (isListing) {
+                    ListingType lType = ListingType.ANY;
+                    switch (listingType.getSelectedItem().toString()){
+                        case "SELLING":
+                            lType = ListingType.SELLING;
+                            break;
+                        case "RENTAL":
+                            lType = ListingType.RENTAL;
+                            break;
+                        default:
+                            break;
+                    }
+                    result = this.handler.getListingByCondition(idField.getText(), priceField.getText(), higher.isSelected(), lType);
+                } else {
+                    PropertyType pType = PropertyType.ANY;
+                    switch (propertyType.getSelectedItem().toString()){
+                        case "APARTMENT":
+                            pType = PropertyType.Apartment;
+                            break;
+                        case "OFFICE":
+                            pType = PropertyType.Office;
+                            break;
+                        case "HOUSE":
+                            pType = PropertyType.House;
+                            break;
+                        default:
+                            break;
+                    }
+                    result = this.handler.getPropertyByCondition(addressField.getText(), pType);
+                }
                 result.addMouseMotionListener(new MouseMotionListener() {
                     int hoveredRow = -1, hoveredColumn = -1;
                     @Override
@@ -142,15 +193,24 @@ public class ListingFrame extends JFrame implements ActionListener {
         // If type is listing, then lookup property with the listing_id.
         // If type is property, then lookup listing with the property address.
         if (!key.equals(currkey)) {
+            JTable result = new JTable(); //stub
+            currkey = key;
             if (isListing) {
-                currkey = key;
                 // Use functions in this.handler to do lookup
-                JTable result = null; //stub
-                rightHolder.getViewport().removeAll();
-                rightHolder.getViewport().add(result);
-                rightHolder.repaint();
-                this.pack();
+                try {
+                    result = this.handler.getPropertyByListing(Integer.parseInt(currkey));
+                } catch (NumberFormatException e) {
+                    // invalid format, don't reverse lookup
+                    return;
+                }
+            } else {
+                result = this.handler.getListingByProperty(currkey);
+
             }
+            rightHolder.getViewport().removeAll();
+            rightHolder.getViewport().add(result);
+            rightHolder.repaint();
+            this.pack();
         }
     }
 
@@ -160,6 +220,7 @@ public class ListingFrame extends JFrame implements ActionListener {
         listingPanel.setVisible(isListing);
         propertyPanel.setVisible(!isListing);
         this.repaint();
+        this.pack();
     }
 
     public void setupListingSearch(){
@@ -232,7 +293,7 @@ public class ListingFrame extends JFrame implements ActionListener {
         c.gridy = 1;
         c.gridx = 0;
 
-        JLabel typePrompt = new JLabel("Listing type: ");
+        JLabel typePrompt = new JLabel("Property type: ");
         propertyPanel.add(typePrompt, c);
 
         c.gridx = 1;

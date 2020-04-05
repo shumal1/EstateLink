@@ -1,6 +1,12 @@
 package ui;
 
+import connector.AgentConnector;
+import connector.ListingConnector;
 import handler.ListingTransactionHandler;
+import handler.TransactionHandler;
+import interact.EstateTransactionHandler;
+import types.ListingType;
+import types.PropertyType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -213,20 +219,19 @@ public class UpdateFrame extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         System.out.println(actionEvent.getActionCommand());
+        String response;
         switch(actionEvent.getActionCommand()) {
             case "comboBoxChanged" :
                 if (actionEvent.getSource() == operation) {
+                    disableAllPanels();
                     switch (operation.getSelectedItem().toString()) {
                         case "INSERT":
-                            disableAllPanels();
                             insertPanel.setVisible(true);
                             break;
                         case "DELETE":
-                            disableAllPanels();
                             deletePanel.setVisible(true);
                             break;
                         case "UPDATE":
-                            disableAllPanels();
                             updatePanel.setVisible(true);
                             break;
                     }
@@ -253,6 +258,46 @@ public class UpdateFrame extends JFrame implements ActionListener {
                 this.repaint();
                 break;
             case "Submit" :
+                switch (operation.getSelectedItem().toString()){
+                    case "INSERT":
+                        PropertyType type = PropertyType.House;
+                        boolean duplex = false;
+                        String apartmentNum = "";
+                        int capacity = 0;
+                        switch (propertyType.getSelectedItem().toString()){
+                            case "APARTMENT":
+                                type = PropertyType.Apartment;
+                                apartmentNum = apartmentNumberField.getText();
+                                break;
+                            case "OFFICE":
+                                type = PropertyType.Office;
+                                capacity = Integer.parseInt(capacityField.getText());
+                                break;
+                            default:
+                                duplex = Boolean.parseBoolean(isDuplex.getSelectedItem().toString());
+                                break;
+                        }
+                        int agentID = handler.getCurrentAgentID();
+                        ListingType listing = ListingType.RENTAL;
+                        if (listingType.getSelectedItem().toString().equals("SELL")){
+                            listing = ListingType.SELLING;
+                        }
+                        response =
+                        handler.insertPropertyListing(addressField.getText(), type,
+                                dimensionField.getText(), postalCodeField.getText(), duplex, apartmentNum, capacity, 0, listing, agentID);
+
+                        JOptionPane.showMessageDialog(this, response);
+                        break;
+                    case "DELETE":
+                        response = handler.deleteListing(Integer.parseInt(deleteID.getText()));
+                        JOptionPane.showMessageDialog(this, response);
+                        break;
+                    case "UPDATE":
+                        response = handler.updateListing(Integer.parseInt(updateID.getText()), Integer.parseInt(priceField.getText()));
+                        JOptionPane.showMessageDialog(this, response);
+                        break;
+                }
+
                 //TODO handle transaction here
                 break;
             case "Menu" :
