@@ -112,11 +112,9 @@ public class ListingFrame extends JFrame implements ActionListener {
             case "Submit" :
                 // TODO USE HANDLER TO PERFORM SEARCH!
                 // Obtain result here
+                this.remove(leftHolder);
                 JTable result = new JTable(); // stub
-
                 if (isListing) {
-                    int id = Integer.parseInt(idField.getText());
-                    int price = Integer.parseInt(priceField.getText());
                     ListingType lType = ListingType.ANY;
                     switch (listingType.getSelectedItem().toString()){
                         case "SELLING":
@@ -128,7 +126,7 @@ public class ListingFrame extends JFrame implements ActionListener {
                         default:
                             break;
                     }
-                    result = this.handler.getListingByCondition(id, price, higher.isSelected(), lType);
+                    result = this.handler.getListingByCondition(idField.getText(), priceField.getText(), higher.isSelected(), lType);
                 } else {
                     PropertyType pType = PropertyType.ANY;
                     switch (listingType.getSelectedItem().toString()){

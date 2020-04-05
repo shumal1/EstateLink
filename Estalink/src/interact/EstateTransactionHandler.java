@@ -135,7 +135,7 @@ public class EstateTransactionHandler implements AgentTransactionHandler, Listin
     }
 
     @Override
-    public JTable getListingByCondition(int id, int price, boolean higher, ListingType type) {
+    public JTable getListingByCondition(String id, String price, boolean higher, ListingType type) {
         Model[] list;
         try {
             ListingModel[] listingModels = manager.getListingConnector().selectListingByCondition(id, price, higher, type);
