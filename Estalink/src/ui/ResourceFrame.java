@@ -38,7 +38,7 @@ public class ResourceFrame extends JFrame implements ActionListener {
         this.add(typePrompt);
 
         c. gridy = 1;
-        String[] resourceTypes = {"BUS", "PARK", "HOSPITAL", "SKYTRAM", "GREENWAY"};
+        String[] resourceTypes = {"BUS", "PARK", "HOSPITAL", "SKYTRAIN", "GREENWAY"};
         resourceType = new JComboBox<>(resourceTypes);
         resourceType.setSelectedIndex(0);
         this.add(resourceType, c);
