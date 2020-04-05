@@ -10,7 +10,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class EstateUI extends JFrame implements ActionListener {
+public class EstateUI implements ActionListener {
     private TransactionHandler handler;
     private JPanel mainMenu;
     private AccountMode mode;
@@ -35,8 +35,8 @@ public class EstateUI extends JFrame implements ActionListener {
 
 
         // center the frame
-        Dimension d = this.getToolkit().getScreenSize();
-        Rectangle r = this.getBounds();
+        Dimension d = mainFrame.getToolkit().getScreenSize();
+        Rectangle r = mainFrame.getBounds();
         mainFrame.setLocation( (d.width - r.width)/2, (d.height - r.height)/2 );
         mainFrame.add(mainMenu);
         // make the window visible
@@ -65,20 +65,23 @@ public class EstateUI extends JFrame implements ActionListener {
             agentView.setIcon(agentIcon);
         } catch (Exception e) {
             // silently ignore, don't add icon
+            System.out.println(e.getMessage());
         }
 
 
         c.fill = GridBagConstraints.NONE;
         c.gridy = 6;
-        c.gridx = GridBagConstraints.CENTER;
+        c.gridx = 0;
         c.anchor = GridBagConstraints.CENTER;
         c.ipady = 0;
-        gb.setConstraints(updateView, c);
-
-        c.gridx = GridBagConstraints.RELATIVE;
         gb.setConstraints(resourceView, c);
-        gb.setConstraints(agentView, c);
+
+        c.gridx = 1;
+        gb.setConstraints(updateView, c);
+        c.gridx = 2;
         gb.setConstraints(listingView, c);
+        c.gridx = 3;
+        gb.setConstraints(agentView, c);
 
         mainMenu.add(updateView);
         if (mode == AccountMode.GUEST) {
