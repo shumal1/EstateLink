@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Estalink.iml" filepath="$PROJECT_DIR$/Estalink.iml" />
+      <module fileurl="file://$PROJECT_DIR$/EstateLink.iml" filepath="$PROJECT_DIR$/EstateLink.iml" />
     </modules>
   </component>
 </project>
