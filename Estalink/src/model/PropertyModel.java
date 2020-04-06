@@ -1,6 +1,8 @@
 package model;
 
-public class PropertyModel {
+import types.PropertyType;
+
+public class PropertyModel implements Model {
     private String property_address;
     private String property_dimension;
     private String property_postalCode;
@@ -63,5 +65,16 @@ public class PropertyModel {
 
     public PropertyType getType() {
         return proeprty_type;
+    }
+
+    public String[] getData(){
+        return new String[]{property_address, property_dimension, property_postalCode, Integer.toString(property_listingID),
+                String.valueOf(property_isDuplex), Integer.toString(property_apartmentNumber),
+                Integer.toString(property_capacity), proeprty_type.name()};
+    }
+
+    public String[] getFieldNames(){
+        return new String[]{"property_address", "property_dimension", "property_postalCode", "property_listingID",
+                "property_isDuplex", "property_apartmentNumber", "property_capacity", proeprty_type.name()};
     }
 }
