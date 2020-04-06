@@ -61,7 +61,7 @@ public class AgentConnector extends Connector{
             ResultSet resultSet = ps.executeQuery();
 
             if(resultSet.next()) {
-                result = resultSet.getInt(1) + 1;
+                result = resultSet.getInt(1);
                 System.out.println("returning " + result);
             }
 

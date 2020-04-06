@@ -1,17 +1,30 @@
-Current schema looks like this
-https://docs.google.com/document/d/1zPGFsNi-GPrjQQ9hLQ4oLz6wipABa9NiLzcpNVBdLQk/edit?usp=sharing
-Feel free to update
+# EstateLink
 
-Please also keep in mind that the ugrad oracle database has a lock that prevents insertion/update from multiple connections, so when running the client make sure you log off and reconnect whenever you made any changes.
-I will probably also add in a reconnect button for this purpose.
+This project requires access to the oracle database in UBC undergraduate linux server.
 
-There is a new set of todos in Listing/Resource/Update frame and their associated methods in EstateTransactionHandler. Whilethe inferface definition for those apis are provided, feel free to update the method arguments to better adapt your connectors. 
+## Setup
 
-A side note for property search is that there could be more than one type of conditions specified, and whoever responsible for property might need to implement a query builder in their connector for this purpose.
+* After cloning the project, you should be able to import it into Intellij
+* Main class is ***src/Estatelink***
+* For this project we use lib/ojdbc8.jar, make sure this is added to the dependency properly
+* To setup your oracle database properly, please use the script ***data/datatable.sql*** to populate the tables
 
-Usages:
-To login as admin, use ADMIN as username and cs304 as password.
-To login as agent, use an existing agent name in your agent table as username and his agent id as password.
-To login as guest, simply input anything.
+## Usage
+* If project is setup correctly, when running you should see an authentication dialog. 
+	* You can choose to sign in as one of: *ADMIN, AGENT, or GUEST*
+		* To login as admin , use **ADMIN** as username and **cs304** as password. 
+		* To login as agent, use an existing agent name the agency_employee table as username and the agent id as password.
+		* To login as guest, simply input anything.
+		* Database uid is ora_**<your_cwl>**, password is a **<your student#>**
+* Once connected to the undergraduate server, a dialog should pop-up indicating whether the log-on was successful, and the main menu will be displayed with the following options:
+	* ***Resources***: Allows the user to search for public resources, and associated properties
+	* ***Listings***: Allows the user to navigate through listings, filter them by condition, or search a property that's listed.
+	* ***Agents***: Allows the user to check the information of an agent or agency. ADMIN user can also register agent here.
+	* ***Update*** (Only avaliable to ADMIN and AGENT): Allows insert, update, or delete operations to be performed on the actual database.
+* The user can nativage between different panels using the *menu* button, to quit simply close the window.
 
-Database uid is ora_<yourcwl>, password is a<your student#>
+## Remarks
+* All of the sql queries could be found in the /connector directory, with different connectors representing access to different tables
+* Handlers are responsible for connecting the user interface to the connectors
+* Database connection is the singleton class *EstateDatabaseManager*. It contains the only connection to the remote database.
+* Models provide ways to abstract different result sets and provide common interface for displaying.
