@@ -3,4 +3,6 @@
 **/.idea/tasks.xml
 
 Estalink/out/*
-Estalink/.idea/*
+Estalink/.idea/workspace.xml
+Estalink/.idea/tasks.xml
+Estalink/*.iml
